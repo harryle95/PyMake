@@ -3,7 +3,7 @@ from typing import List
 import pytest
 
 from PyMake.exceptions import KeywordFormatError
-from PyMake.tokens import Tokenizer
+from PyMake.builder.tokens import Tokenizer
 
 
 @pytest.fixture(scope="function")
