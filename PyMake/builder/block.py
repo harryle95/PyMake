@@ -20,7 +20,7 @@ S = TypeVar("S")
 
 @dataclass
 class Block(Generic[T, S], abc.ABC):
-    _data: S
+    _data: Union[S, str]
     class_type: ClassVar[S]
 
     @classmethod
@@ -29,6 +29,8 @@ class Block(Generic[T, S], abc.ABC):
 
     def __post_init__(self):
         try:
+            if isinstance(self._data, str):
+                self._data = [self._data]
             value = self._validate_data(self._data)
             if isinstance(value, list):
                 value = {name: None for name in value}
