@@ -29,9 +29,12 @@ class Block(Generic[T, S], abc.ABC):
 
     def __post_init__(self):
         try:
+            # Convert single string to dict - allow single string declaration
             if isinstance(self._data, str):
                 self._data = [self._data]
+            # Validate data based on type
             value = self._validate_data(self._data)
+            # Create atom mapping from coerced data
             if isinstance(value, list):
                 value = {name: None for name in value}
             self._mapping = {name: self._create_atom(index, name, value[name]) for index, name in

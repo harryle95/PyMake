@@ -60,6 +60,7 @@ class BasicAtom(Atom):
     @property
     def default(self) -> Optional[BasicType]:
         if self._default:
+            # If default value is required, equivalent to None
             if isinstance(self._default, str) and self._default.upper() == "REQUIRED":
                 return None
             return self._default
@@ -102,6 +103,7 @@ class SequenceAtom(Atom):
     @property
     def default(self) -> Optional[SequenceType]:
         if self._default:
+            # Allows for setting sequence var as REQUIRED
             if isinstance(self._default, str) and self._default.upper() == "REQUIRED":
                 return None
             return self._default
