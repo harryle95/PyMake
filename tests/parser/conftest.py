@@ -24,7 +24,7 @@ def parser_2() -> VarParser:
             "var1": "basic",
             "var2": "basic",
         },
-        positional={0: "var1", 1: "var2", 2: "var3"},
+        positional={0: "var1", 1: "var2"},
         default={"var1": 10, "var2": 20},
         required=[]
     )
@@ -37,7 +37,7 @@ def input_1():
 
 @pytest.fixture(scope="function")
 def input_2():
-    return "100 200 300"
+    return "100 200 --var3 300"
 
 
 @pytest.fixture(scope="function")
