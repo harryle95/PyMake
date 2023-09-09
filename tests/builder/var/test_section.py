@@ -285,6 +285,82 @@ def valid_yaml_11():
 
 
 @pytest.fixture(scope="function")
+def valid_yaml_12():
+    raw = """
+    basic:
+    """
+    variables = {
+    }
+    defaults = {
+    }
+    positional = {
+    }
+    required = []
+    return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
+
+@pytest.fixture(scope="function")
+def valid_yaml_13():
+    raw = """
+    flag:
+    """
+    variables = {
+    }
+    defaults = {
+    }
+    positional = {
+    }
+    required = []
+    return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
+
+@pytest.fixture(scope="function")
+def valid_yaml_14():
+    raw = """
+    sequence:
+    """
+    variables = {
+    }
+    defaults = {
+    }
+    positional = {
+    }
+    required = []
+    return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
+
+@pytest.fixture(scope="function")
+def valid_yaml_15():
+    raw = """
+    flag:
+    basic:
+    sequence:
+    """
+    variables = {
+    }
+    defaults = {
+    }
+    positional = {
+    }
+    required = []
+    return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
+
+@pytest.fixture(scope="function")
+def valid_yaml_16():
+    raw = """
+    """
+    variables = {
+    }
+    defaults = {
+    }
+    positional = {
+    }
+    required = []
+    return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
+
+@pytest.fixture(scope="function")
 def invalid_validation_yaml_1():
     raw = """
     basic: 
@@ -314,6 +390,24 @@ def invalid_validation_yaml_3():
 
 
 @pytest.fixture(scope="function")
+def invalid_validation_yaml_4():
+    raw = """
+    flag:
+        var1
+    """
+    return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
+def invalid_validation_yaml_5():
+    raw = """
+    sequence:
+        var1: {var2: 100}
+    """
+    return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
 def invalid_value_yaml_1():
     raw = """
     basic: 
@@ -322,6 +416,7 @@ def invalid_value_yaml_1():
         var1: "-a"
     """
     return {"raw": raw}
+
 
 @pytest.fixture(scope="function")
 def invalid_value_yaml_2():
@@ -333,6 +428,7 @@ def invalid_value_yaml_2():
     """
     return {"raw": raw}
 
+
 @pytest.fixture(scope="function")
 def invalid_value_yaml_3():
     raw = """
@@ -342,6 +438,29 @@ def invalid_value_yaml_3():
         var1: [1,2,3]
     """
     return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
+def invalid_value_yaml_4():
+    raw = """
+    option: 
+        var1: "-a"
+    sequence:
+        seq1: [1,2,3]
+    """
+    return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
+def invalid_value_yaml_5():
+    raw = """
+    base: 
+        var1: "-a"
+    sequence:
+        seq1: [1,2,3]
+    """
+    return {"raw": raw}
+
 
 @pytest.mark.parametrize(
     "test_suite", [
@@ -355,7 +474,12 @@ def invalid_value_yaml_3():
         "valid_yaml_8",
         "valid_yaml_9",
         "valid_yaml_10",
-        "valid_yaml_11"
+        "valid_yaml_11",
+        "valid_yaml_12",
+        "valid_yaml_13",
+        "valid_yaml_14",
+        "valid_yaml_15",
+        "valid_yaml_16"
     ]
 )
 def test_valid_yaml(test_suite, request):
@@ -373,6 +497,8 @@ def test_valid_yaml(test_suite, request):
         "invalid_validation_yaml_1",
         "invalid_validation_yaml_2",
         "invalid_validation_yaml_3",
+        "invalid_validation_yaml_4",
+        "invalid_validation_yaml_5",
     ]
 )
 def test_invalid_validation_yaml(test_suite, request):
@@ -387,6 +513,8 @@ def test_invalid_validation_yaml(test_suite, request):
         "invalid_value_yaml_1",
         "invalid_value_yaml_2",
         "invalid_value_yaml_3",
+        "invalid_value_yaml_4",
+        "invalid_value_yaml_5"
     ]
 )
 def test_invalid_value_yaml(test_suite, request):

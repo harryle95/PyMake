@@ -26,7 +26,7 @@ class VarSection:
         if len(unhandled_key) != 0:
             raise ValueError(f"Unexpected block in var section: {unhandled_key}")
         for (k, v) in FACTORY.items():
-            if k in data:
+            if k in data and data[k]:
                 self.__setattr__(k, v(_data=data[k]))
             else:
                 self.__setattr__(k, None)
