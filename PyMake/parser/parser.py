@@ -2,7 +2,7 @@
 import abc
 from typing import Literal, Optional, Union
 
-from PyMake.exceptions import InvalidPointerError, StateError, UndefinedVariableError
+from PyMake.exceptions import InvalidPointerError, MissingRequiredVariableError, StateError, UndefinedVariableError
 from PyMake.parser.tokens import Tokenizer
 
 NameSpaceType = dict[str, Union[str, list[str]]]
@@ -153,3 +153,13 @@ class VarParser:
                 self.handle_option(token.value)
             else:
                 self.handle_value(token.value)
+
+        # Add default values:
+        for var in self.default:
+            if not(var in self.namespace):
+                self.set(var, str(self.default[var]))
+
+        # Validate all required:
+        for var in self.required:
+            if not(var in self.namespace):
+                raise MissingRequiredVariableError(f"Missing {var}")

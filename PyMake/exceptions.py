@@ -17,3 +17,6 @@ class UndefinedVariableError(ParserError):
 
 class InvalidPointerError(ParserError):
     pass
+
+class MissingRequiredVariableError(ParserError):
+    pass

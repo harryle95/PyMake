@@ -97,17 +97,17 @@ def parser1_input5_output():
 
 @pytest.fixture(scope="function")
 def parser1_input6_output():
-    return {"var1": '100', "var2": '200', "var3": '30'}
+    return {"var1": '100', "var2": '200', "var3": '20'}
 
 
 @pytest.fixture(scope="function")
 def parser1_input7_output():
-    return {"var1": '100', "var2": 'ASD', "var3": '30'}
+    return {"var1": '100', "var2": 'ASD', "var3": '20'}
 
 
 @pytest.fixture(scope="function")
 def parser1_input8_output():
-    return {"var1": 'ASD', "var2": '100', "var3": '30'}
+    return {"var1": 'ASD', "var2": '100', "var3": '20'}
 
 
 @pytest.fixture(scope="function")
