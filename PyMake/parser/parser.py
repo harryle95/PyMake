@@ -2,7 +2,10 @@
 import abc
 from typing import Literal, Optional, Union
 
-from PyMake.exceptions import InvalidPointerError, MissingRequiredVariableError, StateError, UndefinedVariableError
+from PyMake.exceptions import (
+    InvalidPointerError, InvalidValueError, MissingRequiredVariableError, StateError,
+    UndefinedVariableError, VariableRedefinitionError,
+)
 from PyMake.parser.tokens import Tokenizer
 
 NameSpaceType = dict[str, Union[str, list[str]]]
@@ -44,7 +47,7 @@ class State(abc.ABC):
 class ExpectOption(State):
     def handle_option(self, option: str) -> None:
         if option in self.context.namespace:
-            raise ValueError(f"Variable redefinition: {option}")
+            raise VariableRedefinitionError(f"Variable redefinition: {option}")
         option_type = self.context.get_type(option)
         if option_type in ["basic", "sequence"]:
             self.context.transition(
@@ -56,12 +59,12 @@ class ExpectOption(State):
             )
 
     def handle_value(self, value: str) -> None:
-        raise ValueError(f"Invalid positional argument: {value}. Expecting a keyword argument")
+        raise InvalidValueError(f"Invalid positional argument: {value}. Expecting a keyword argument")
 
 
 class ExpectValue(State):
     def handle_option(self, option: str) -> None:
-        raise ValueError(f"Invalid keyword argument: {option}. Expecting a value argument")
+        raise InvalidValueError(f"Invalid keyword argument: {option}. Expecting a value argument")
 
     def handle_value(self, value: str) -> None:
         self.context.set(self.variable, value)
@@ -133,7 +136,7 @@ class VarParser:
         elif self.variables[variable] == "basic":
             self.namespace[variable] = value
         else:
-            raise ValueError("Flag variable does not accept value")
+            raise InvalidValueError("Flag variable does not accept value")
 
     def get_type(self, variable: str) -> OptionType:
         if variable in self.variables:

@@ -9,14 +9,26 @@ class InvalidElementError(ParserError):
 class KeywordFormatError(ParserError):
     pass
 
+
 class StateError(ParserError):
     pass
+
 
 class UndefinedVariableError(ParserError):
     pass
 
+
 class InvalidPointerError(ParserError):
     pass
 
+
 class MissingRequiredVariableError(ParserError):
+    pass
+
+
+class VariableRedefinitionError(ParserError):
+    pass
+
+
+class InvalidValueError(ParserError):
     pass
