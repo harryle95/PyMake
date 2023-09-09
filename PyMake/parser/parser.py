@@ -10,7 +10,7 @@ OptionType = Literal['basic', 'flag', 'sequence']
 DefaultType = Union[int, float, str, list[int], list[float], list[str]]
 
 
-class State(abc):
+class State(abc.ABC):
     def __init__(
             self,
             context: "VarParser",
@@ -29,7 +29,7 @@ class State(abc):
             raise StateError("State that allows positional argument can not have a variable")
         if self.allow_positional is True and self.pointer is None:
             raise StateError("State that allows positional argument must have a valid positional pointer")
-        if self.pointer >= len(self.context.positional):
+        if self.pointer and self.pointer >= len(self.context.positional):
             raise StateError("Invalid pointer value")
 
     @abc.abstractmethod
@@ -118,7 +118,7 @@ class VarParser:
         self._state = state
 
     def set(self, variable: str, value: str) -> None:
-        if self.variables[variable] == "sequence":
+        if self.get_type(variable) == "sequence":
             if not (variable in self.namespace):
                 self.namespace[variable] = []
             self.namespace[variable].append(value)
@@ -130,7 +130,7 @@ class VarParser:
     def get_type(self, variable: str) -> OptionType:
         if variable in self.variables:
             return self.variables[variable]
-        raise UndefinedVariableError(f"Variable '{variable}' was not defined in the var section")
+        raise UndefinedVariableError(f"Variable {variable} was not defined in the var section")
 
     def get_positional(self, pointer: int) -> str:
         if pointer is None:
