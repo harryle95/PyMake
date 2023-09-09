@@ -1,5 +1,6 @@
 import pytest
 import yaml
+from pydantic_core import ValidationError
 
 from PyMake.builder.var.section import VarSection
 
@@ -241,6 +242,7 @@ def valid_yaml_9():
     required = []
     return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
 
+
 @pytest.fixture(scope="function")
 def valid_yaml_10():
     raw = """
@@ -251,12 +253,13 @@ def valid_yaml_10():
         "seq1": "sequence",
     }
     defaults = {
-        "seq1": [1,2,3]
+        "seq1": [1, 2, 3]
     }
     positional = {
     }
     required = []
     return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
 
 @pytest.fixture(scope="function")
 def valid_yaml_11():
@@ -279,6 +282,66 @@ def valid_yaml_11():
     }
     required = []
     return {"raw": raw, "variables": variables, "defaults": defaults, "positional": positional, "required": required}
+
+
+@pytest.fixture(scope="function")
+def invalid_validation_yaml_1():
+    raw = """
+    basic: 
+        var1: [1, 2, 3]
+    """
+    return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
+def invalid_validation_yaml_2():
+    raw = """
+    basic: 
+        var1: {var2: 10}
+    """
+    return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
+def invalid_validation_yaml_3():
+    raw = """
+    basic: 
+        var1: 
+            var2: 10
+            var3: 100
+    """
+    return {"raw": raw}
+
+
+@pytest.fixture(scope="function")
+def invalid_value_yaml_1():
+    raw = """
+    basic: 
+        var1: 10
+    flag: 
+        var1: "-a"
+    """
+    return {"raw": raw}
+
+@pytest.fixture(scope="function")
+def invalid_value_yaml_2():
+    raw = """
+    basic: 
+        var1: 10
+    sequence:
+        var1: [1,2,3]
+    """
+    return {"raw": raw}
+
+@pytest.fixture(scope="function")
+def invalid_value_yaml_3():
+    raw = """
+    flag: 
+        var1: "-a"
+    sequence:
+        var1: [1,2,3]
+    """
+    return {"raw": raw}
 
 @pytest.mark.parametrize(
     "test_suite", [
@@ -303,3 +366,31 @@ def test_valid_yaml(test_suite, request):
     assert section.variables == test_dict['variables']
     assert section.positional == test_dict['positional']
     assert section.default == test_dict['defaults']
+
+
+@pytest.mark.parametrize(
+    "test_suite", [
+        "invalid_validation_yaml_1",
+        "invalid_validation_yaml_2",
+        "invalid_validation_yaml_3",
+    ]
+)
+def test_invalid_validation_yaml(test_suite, request):
+    test_dict = request.getfixturevalue(test_suite)
+    vars = yaml.safe_load(test_dict['raw'])
+    with pytest.raises(ValidationError):
+        section = VarSection(vars)
+
+
+@pytest.mark.parametrize(
+    "test_suite", [
+        "invalid_value_yaml_1",
+        "invalid_value_yaml_2",
+        "invalid_value_yaml_3",
+    ]
+)
+def test_invalid_value_yaml(test_suite, request):
+    test_dict = request.getfixturevalue(test_suite)
+    vars = yaml.safe_load(test_dict['raw'])
+    with pytest.raises(ValueError):
+        section = VarSection(vars)
