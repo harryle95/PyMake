@@ -8,3 +8,12 @@ class InvalidElementError(ParserError):
 
 class KeywordFormatError(ParserError):
     pass
+
+class StateError(ParserError):
+    pass
+
+class UndefinedVariableError(ParserError):
+    pass
+
+class InvalidPointerError(ParserError):
+    pass
