@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Any
 
 from PyMake.builder.var.block import BasicBlock, FlagBlock, SequenceBlock
 from PyMake.parser.parser import VarParser
@@ -12,6 +12,14 @@ FACTORY = {
 
 class VarSection:
     def __init__(self, data: Any):
+        self.variables = {}
+        self.positional = {}
+        self.required = []
+        self.default = {}
+        if data:
+            self.add_blocks(data)
+
+    def add_blocks(self, data):
         if not isinstance(data, dict):
             raise ValueError("Var section must be defined as a dictionary")
         unhandled_key = [k for k in data if k not in FACTORY]
@@ -22,34 +30,31 @@ class VarSection:
                 self.__setattr__(k, v(_data=data[k]))
             else:
                 self.__setattr__(k, None)
-        self.vars = []
-        self.positional = {}
-        self.required = []
-        self.default = {}
+
         for k in FACTORY.keys():
-            self._update_vars(k)
+            self._update_parser_elements(k)
 
     def build(self) -> VarParser:
         return VarParser(
-            variables=self.vars,
+            variables=self.variables,
             positional=self.positional,
             required=self.required,
             default=self.default,
         )
 
-    def _update_vars(
+    def _update_parser_elements(
             self,
-            container_type: Literal['basic', 'flag', 'sequence']
+            container_type: str
     ) -> None:
         container = self.__getattribute__(container_type)
         if container is None:
             return
         for key, value in container.mapping.items():
-            if key in vars:
+            if key in self.variables:
                 raise ValueError("Variable defined in different blocks")
-            self.vars[key] = container_type
-            if hasattr(container, "position"):
-                self.positional[key] = value.position
+            self.variables[key] = container_type
+            if hasattr(value, "position"):
+                self.positional[value.position] = key
             if value.required:
                 self.required.append(key)
             if value.default:
