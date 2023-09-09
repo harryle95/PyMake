@@ -3,8 +3,9 @@ import abc
 from typing import Literal, Optional, Union
 
 from PyMake.exceptions import InvalidPointerError, StateError, UndefinedVariableError
+from PyMake.parser.tokens import Tokenizer
 
-NameSpaceType = dict[str, str]
+NameSpaceType = dict[str, Union[str, list[str]]]
 OptionType = Literal['basic', 'flag', 'sequence']
 DefaultType = Union[int, float, str, list[int], list[float], list[str]]
 
@@ -138,3 +139,17 @@ class VarParser:
             return self.positional[pointer]
         raise InvalidPointerError(f"Positional pointer not recognised")
 
+    def handle_option(self, option: str) -> None:
+        self._state.handle_option(option)
+
+    def handle_value(self, value: str) -> None:
+        self._state.handle_value(value)
+
+    def parse(self, args: Union[str, list[str]]) -> None:
+        self.namespace = self._init_namespace()
+        tokens = Tokenizer.tokenize(args)
+        for token in tokens:
+            if token.is_option:
+                self.handle_option(token.value)
+            else:
+                self.handle_value(token.value)
