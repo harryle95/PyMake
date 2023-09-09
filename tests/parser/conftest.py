@@ -31,6 +31,20 @@ def parser_2() -> VarParser:
 
 
 @pytest.fixture(scope="function")
+def parser_3() -> VarParser:
+    return VarParser(
+        variables={
+            "var1": "basic",
+            "var2": "basic",
+            "var3": "basic"
+        },
+        positional={0: "var1", 1: "var2", 2: "var3"},
+        default={},
+        required=["var1", "var2", "var3"]
+    )
+
+
+@pytest.fixture(scope="function")
 def input_1():
     return "--var1 100 --var2 100 --var3 100"
 
@@ -68,6 +82,11 @@ def input_7():
 @pytest.fixture(scope="function")
 def input_8():
     return "--var2 100 --var1 ASD"
+
+@pytest.fixture(scope="function")
+def input_9():
+    return "--var1 100 1000 --var2 10"
+
 
 
 @pytest.fixture(scope="function")

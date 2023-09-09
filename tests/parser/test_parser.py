@@ -1,6 +1,6 @@
 import pytest
 
-from PyMake.exceptions import UndefinedVariableError
+from PyMake.exceptions import MissingRequiredVariableError, UndefinedVariableError, InvalidValueError
 
 
 @pytest.mark.parametrize(
@@ -35,8 +35,36 @@ def test_parser_valid(parser, args, output, request):
         ("parser_2", "input_5"),
     ]
 )
-def test_parser_invalid(parser, args, request):
+def test_parser_undefined_var(parser, args, request):
     parser = request.getfixturevalue(parser)
     arg = request.getfixturevalue(args)
     with pytest.raises(UndefinedVariableError):
+        parser.parse(arg)
+
+
+@pytest.mark.parametrize(
+    "parser, args", [
+        ("parser_3", "input_6"),
+        ("parser_3", "input_7"),
+        ("parser_3", "input_8"),
+    ]
+)
+def test_parser_missing_required(parser, args, request):
+    parser = request.getfixturevalue(parser)
+    arg = request.getfixturevalue(args)
+    with pytest.raises(MissingRequiredVariableError):
+        parser.parse(arg)
+
+
+@pytest.mark.parametrize(
+    "parser, args", [
+        ("parser_1", "input_9"),
+        ("parser_2", "input_9"),
+        ("parser_3", "input_9"),
+    ]
+)
+def test_parser_invalid_value(parser, args, request):
+    parser = request.getfixturevalue(parser)
+    arg = request.getfixturevalue(args)
+    with pytest.raises(InvalidValueError):
         parser.parse(arg)
