@@ -90,6 +90,14 @@ class ExpectOptionValue(ExpectOption):
         variable = self.context.get_positional(self.pointer)
         self.context.set(variable, value)
         self.pointer += 1
+        if self.pointer in self.context.positional:
+            self.context.transition(
+                ExpectOptionValue(context=self.context, allow_positional=True, pointer=self.pointer)
+            )
+        else:
+            self.context.transition(
+                ExpectOption(context=self.context)
+            )
 
 
 class VarParser:
@@ -147,6 +155,7 @@ class VarParser:
 
     def parse(self, args: Union[str, list[str]]) -> None:
         self.namespace = self._init_namespace()
+        self._state = self._init_state()
         tokens = Tokenizer.tokenize(args)
         for token in tokens:
             if token.is_option:
@@ -156,10 +165,10 @@ class VarParser:
 
         # Add default values:
         for var in self.default:
-            if not(var in self.namespace):
+            if not (var in self.namespace):
                 self.set(var, str(self.default[var]))
 
         # Validate all required:
         for var in self.required:
-            if not(var in self.namespace):
+            if not (var in self.namespace):
                 raise MissingRequiredVariableError(f"Missing {var}")
