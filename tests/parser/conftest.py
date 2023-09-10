@@ -188,9 +188,113 @@ def parser2() -> VarParser:
     section = VarSection(data)
     yield section.build()
 
+
 @pytest.fixture(scope="function")
 def valid_parser2_input1():
     return {
         "args": "1 2 3",
         "namespace": {"var1": "1", "var2": "2", "var3": "3", "seq1": "1 2 3 4 5"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser2_input2():
+    return {
+        "args": "1 2 3 --flag1 --seq1 1 1 1",
+        "namespace": {"var1": "1", "var2": "2", "var3": "3", "seq1": "1 1 1", "flag1": "-A"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser2_input3():
+    return {
+        "args": "1 2 --flag1 --seq1 1 1",
+        "namespace": {"var1": "1", "var2": "2", "var3": "100", "seq1": "1 1", "flag1": "-A"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser2_input4():
+    return {
+        "args": "1 2 --seq1 1 1 --flag1",
+        "namespace": {"var1": "1", "var2": "2", "var3": "100", "seq1": "1 1", "flag1": "-A"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser2_input5():
+    return {
+        "args": "1 2 --seq1 1 1",
+        "namespace": {"var1": "1", "var2": "2", "var3": "100", "seq1": "1 1"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser2_input6():
+    return {
+        "args": "1 2 --seq1 1 1 --var3 110 --flag1",
+        "namespace": {"var1": "1", "var2": "2", "var3": "110", "seq1": "1 1", "flag1": "-A"}
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_missing_required_1():
+    return {
+        "args": "1 --seq1 1 1 --var3 110 --flag1",
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_missing_required_2():
+    return {
+        "args": "",
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_undefined_variable_1():
+    return {
+        "args": "--var2 100 --var4 1000",
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_undefined_variable_2():
+    return {
+        "args": "--var 100 --var1 1000",
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_invalid_value_1():
+    return {
+        "args": "--var2 100 1000",
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_invalid_value_2():
+    return {
+        "args": "--var1 1 10",
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_invalid_value_3():
+    return {
+        "args": "--var1 --var2 100"
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_invalid_value_4():
+    return {
+        "args": "--seq1 --var2 100"
+    }
+
+
+@pytest.fixture(scope="function")
+def invalid_parser2_invalid_value_5():
+    return {
+        "args": "--var2 100 --flag1 100"
     }

@@ -1,24 +1,29 @@
 import pytest
 
-from PyMake.exceptions import InvalidValueError, UndefinedVariableError, \
+from PyMake.exceptions import InvalidValueError, MissingRequiredVariableError, UndefinedVariableError, \
     VariableRedefinitionError
 
 
 @pytest.mark.parametrize(
     "parser, valid_input", [
-        # ("parser1", "valid_parser1_input1"),
-        # ("parser1", "valid_parser1_input2"),
-        # ("parser1", "valid_parser1_input3"),
-        # ("parser1", "valid_parser1_input4"),
-        # ("parser1", "valid_parser1_input5"),
-        # ("parser1", "valid_parser1_input6"),
-        # ("parser1", "valid_parser1_input7"),
-        # ("parser1", "valid_parser1_input8"),
-        # ("parser1", "valid_parser1_input9"),
-        # ("parser1", "valid_parser1_input10"),
-        # ("parser1", "valid_parser1_input11"),
-        # ("parser1", "valid_parser1_input12"),
+        ("parser1", "valid_parser1_input1"),
+        ("parser1", "valid_parser1_input2"),
+        ("parser1", "valid_parser1_input3"),
+        ("parser1", "valid_parser1_input4"),
+        ("parser1", "valid_parser1_input5"),
+        ("parser1", "valid_parser1_input6"),
+        ("parser1", "valid_parser1_input7"),
+        ("parser1", "valid_parser1_input8"),
+        ("parser1", "valid_parser1_input9"),
+        ("parser1", "valid_parser1_input10"),
+        ("parser1", "valid_parser1_input11"),
+        ("parser1", "valid_parser1_input12"),
         ("parser2", "valid_parser2_input1"),
+        ("parser2", "valid_parser2_input2"),
+        ("parser2", "valid_parser2_input3"),
+        ("parser2", "valid_parser2_input4"),
+        ("parser2", "valid_parser2_input5"),
+        ("parser2", "valid_parser2_input6"),
     ]
 )
 def test_parser_valid(parser, valid_input, request):
@@ -47,6 +52,11 @@ def test_parser_undefined_var(parser, invalid_input, request):
     "parser, invalid_input", [
         ("parser1", "invalid_parser1_invalid_value_1"),
         ("parser1", "invalid_parser1_invalid_value_2"),
+        ("parser2", "invalid_parser2_invalid_value_1"),
+        ("parser2", "invalid_parser2_invalid_value_2"),
+        ("parser2", "invalid_parser2_invalid_value_3"),
+        ("parser2", "invalid_parser2_invalid_value_4"),
+        ("parser2", "invalid_parser2_invalid_value_5"),
     ]
 )
 def test_parser_invalid_value(parser, invalid_input, request):
@@ -75,10 +85,25 @@ def test_parser_variable_redefinition(parser, invalid_input, request):
         ("parser1", "invalid_parser1_undefined_variable_2"),
         ("parser1", "invalid_parser1_undefined_variable_3"),
         ("parser1", "invalid_parser1_undefined_variable_4"),
+        ("parser2", "invalid_parser2_undefined_variable_1"),
+        ("parser2", "invalid_parser2_undefined_variable_2"),
     ]
 )
-def test_parser_variable_redefinition(parser, invalid_input, request):
+def test_parser_variable_undefined(parser, invalid_input, request):
     parser = request.getfixturevalue(parser)
     args = request.getfixturevalue(invalid_input)['args']
     with pytest.raises(UndefinedVariableError):
+        parser.parse(args)
+
+
+@pytest.mark.parametrize(
+    "parser, invalid_input", [
+        ("parser2", "invalid_parser2_missing_required_1"),
+        ("parser2", "invalid_parser2_missing_required_2"),
+    ]
+)
+def test_parser_missing_required(parser, invalid_input, request):
+    parser = request.getfixturevalue(parser)
+    args = request.getfixturevalue(invalid_input)['args']
+    with pytest.raises(MissingRequiredVariableError):
         parser.parse(args)

@@ -54,6 +54,7 @@ class ExpectOption(State):
                 ExpectValue(context=self.context, variable=option)
             )
         else:
+            self.context.set(option)
             self.context.transition(
                 ExpectOption(context=self.context, variable=option)
             )
@@ -129,7 +130,7 @@ class VarParser:
     def transition(self, state: State):
         self._state = state
 
-    def set(self, variable: str, value: str) -> None:
+    def set(self, variable: str, value: Optional[str] = None) -> None:
         if self.get_type(variable) == "sequence":
             if not (variable in self.namespace):
                 self.namespace[variable] = []
@@ -137,7 +138,7 @@ class VarParser:
         elif self.get_type(variable) == "basic":
             self.namespace[variable] = value
         else:
-            raise InvalidValueError("Flag variable does not accept value")
+            self.namespace[variable] = self.default[variable]
 
     def get_type(self, variable: str) -> OptionType:
         if variable in self.variables:
