@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         python-version: [ "3.10" ]
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -24,3 +23,9 @@ jobs:
       - name: Test with pytest
         run: |
           poetry run pytest --cov-report=html
+      - name: Lint with Ruff
+        run: |
+          poetry run ruff check PyMake
+      - name: Static Analysis with Black
+        run: |
+          poetry run black --check PyMake

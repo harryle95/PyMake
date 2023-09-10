@@ -3,23 +3,27 @@ import abc
 from typing import Literal, Optional, Union
 
 from PyMake.exceptions import (
-    InvalidPointerError, InvalidValueError, MissingRequiredVariableError, StateError,
-    UndefinedVariableError, VariableRedefinitionError,
+    InvalidPointerError,
+    InvalidValueError,
+    MissingRequiredVariableError,
+    StateError,
+    UndefinedVariableError,
+    VariableRedefinitionError,
 )
 from PyMake.parser.tokens import Tokenizer
 
 NameSpaceType = dict[str, Union[str, list[str]]]
-OptionType = Literal['basic', 'flag', 'sequence']
+OptionType = Literal["basic", "flag", "sequence"]
 DefaultType = Union[int, float, str, list[int], list[float], list[str]]
 
 
 class State(abc.ABC):
     def __init__(
-            self,
-            context: "VarParser",
-            variable: Optional[str] = None,
-            allow_positional: bool = False,
-            pointer: Optional[int] = None,
+        self,
+        context: "VarParser",
+        variable: Optional[str] = None,
+        allow_positional: bool = False,
+        pointer: Optional[int] = None,
     ) -> None:
         self.context = context
         self.variable = variable
@@ -29,9 +33,14 @@ class State(abc.ABC):
 
     def _validate_state(self):
         if self.variable and self.allow_positional is True:
-            raise StateError("State that allows positional argument can not have a variable")
+            raise StateError(
+                "State that allows positional argument can not have a variable"
+            )
         if self.allow_positional is True and self.pointer is None:
-            raise StateError("State that allows positional argument must have a valid positional pointer")
+            raise StateError(
+                "State that allows positional argument must have a valid positional "
+                "pointer"
+            )
         if self.pointer and self.pointer >= len(self.context.positional):
             raise StateError("Invalid pointer value")
 
@@ -50,22 +59,22 @@ class ExpectOption(State):
             raise VariableRedefinitionError(f"Variable redefinition: {option}")
         option_type = self.context.get_type(option)
         if option_type in ["basic", "sequence"]:
-            self.context.transition(
-                ExpectValue(context=self.context, variable=option)
-            )
+            self.context.transition(ExpectValue(context=self.context, variable=option))
         else:
             self.context.set(option)
-            self.context.transition(
-                ExpectOption(context=self.context, variable=option)
-            )
+            self.context.transition(ExpectOption(context=self.context, variable=option))
 
     def handle_value(self, value: str) -> None:
-        raise InvalidValueError(f"Invalid positional argument: {value}. Expecting a keyword argument")
+        raise InvalidValueError(
+            f"Invalid positional argument: {value}. Expecting a keyword argument"
+        )
 
 
 class ExpectValue(State):
     def handle_option(self, option: str) -> None:
-        raise InvalidValueError(f"Invalid keyword argument: {option}. Expecting a value argument")
+        raise InvalidValueError(
+            f"Invalid keyword argument: {option}. Expecting a value argument"
+        )
 
     def handle_value(self, value: str) -> None:
         self.context.set(self.variable, value)
@@ -80,7 +89,6 @@ class ExpectValue(State):
 
 
 class ExpectOptionValue(ExpectOption):
-
     def handle_value(self, value: str) -> None:
         if self.allow_positional:
             self.handle_positional(value)
@@ -96,21 +104,22 @@ class ExpectOptionValue(ExpectOption):
         self.pointer += 1
         if self.pointer in self.context.positional:
             self.context.transition(
-                ExpectOptionValue(context=self.context, allow_positional=True, pointer=self.pointer)
+                ExpectOptionValue(
+                    context=self.context, allow_positional=True, pointer=self.pointer
+                )
             )
         else:
-            self.context.transition(
-                ExpectOption(context=self.context)
-            )
+            self.context.transition(ExpectOption(context=self.context))
 
 
 class VarParser:
     def __init__(
-            self,
-            variables: dict[str, OptionType],
-            positional: dict[int, str],
-            default: dict[str, DefaultType],
-            required: list[str], ) -> None:
+        self,
+        variables: dict[str, OptionType],
+        positional: dict[int, str],
+        default: dict[str, DefaultType],
+        required: list[str],
+    ) -> None:
         self.variables = variables
         self.positional = positional
         self.default = default
@@ -132,7 +141,7 @@ class VarParser:
 
     def set(self, variable: str, value: Optional[str] = None) -> None:
         if self.get_type(variable) == "sequence":
-            if not (variable in self.namespace):
+            if variable not in self.namespace:
                 self.namespace[variable] = []
             self.namespace[variable].append(value)
         elif self.get_type(variable) == "basic":
@@ -143,14 +152,16 @@ class VarParser:
     def get_type(self, variable: str) -> OptionType:
         if variable in self.variables:
             return self.variables[variable]
-        raise UndefinedVariableError(f"Variable {variable} was not defined in the var section")
+        raise UndefinedVariableError(
+            f"Variable {variable} was not defined in the var section"
+        )
 
     def get_positional(self, pointer: int) -> str:
         if pointer is None:
-            raise InvalidPointerError(f"Pointer is undefined")
+            raise InvalidPointerError("Pointer is undefined")
         if pointer in self.positional:
             return self.positional[pointer]
-        raise InvalidPointerError(f"Positional pointer not recognised")
+        raise InvalidPointerError("Positional pointer not recognised")
 
     def handle_option(self, option: str) -> None:
         self._state.handle_option(option)
@@ -170,7 +181,7 @@ class VarParser:
 
         # Add default values:
         for var in self.default:
-            if not (var in self.namespace):
+            if var not in self.namespace:
                 if self.get_type(var) == "basic":
                     self.set(var, str(self.default[var]))
                 if self.get_type(var) == "sequence":
@@ -178,7 +189,7 @@ class VarParser:
 
         # Validate all required:
         for var in self.required:
-            if not (var in self.namespace):
+            if var not in self.namespace:
                 raise MissingRequiredVariableError(f"Missing {var}")
 
         # Trim sequence var:
