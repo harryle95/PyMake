@@ -101,12 +101,12 @@ class SequenceAtom(Atom):
     _default: Optional[Union[SequenceType, Literal['REQUIRED']]]
 
     @property
-    def default(self) -> Optional[str]:
+    def default(self) -> Optional[SequenceType]:
         if self._default:
             # Allows for setting sequence var as REQUIRED
             if isinstance(self._default, str) and self._default.upper() == "REQUIRED":
                 return None
-            return " ".join([str(i) for i in self._default])
+            return self._default
         return None
 
     @property

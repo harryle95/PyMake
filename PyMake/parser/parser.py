@@ -116,6 +116,7 @@ class VarParser:
         self.required = required
         self.namespace = self._init_namespace()
         self._state = self._init_state()
+        self._seq_vars = [v for v in self.variables if self.get_type(v) == "sequence"]
 
     def _init_state(self) -> State:
         if len(self.positional) == 0:
@@ -133,7 +134,7 @@ class VarParser:
             if not (variable in self.namespace):
                 self.namespace[variable] = []
             self.namespace[variable].append(value)
-        elif self.variables[variable] == "basic":
+        elif self.get_type(variable) == "basic":
             self.namespace[variable] = value
         else:
             raise InvalidValueError("Flag variable does not accept value")
@@ -169,9 +170,16 @@ class VarParser:
         # Add default values:
         for var in self.default:
             if not (var in self.namespace):
-                self.set(var, str(self.default[var]))
+                if self.get_type(var) == "basic":
+                    self.set(var, str(self.default[var]))
+                if self.get_type(var) == "sequence":
+                    self.namespace[var] = self.default[var]
 
         # Validate all required:
         for var in self.required:
             if not (var in self.namespace):
                 raise MissingRequiredVariableError(f"Missing {var}")
+
+        # Trim sequence var:
+        for var in self._seq_vars:
+            self.namespace[var] = " ".join([str(i) for i in self.namespace[var]])
