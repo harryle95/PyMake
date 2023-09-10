@@ -48,6 +48,7 @@ class Atom(abc.ABC):
         return NotImplemented
 
     @property
+    @abc.abstractmethod
     def required(self) -> bool:
         return NotImplemented
 
