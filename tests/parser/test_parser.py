@@ -1,6 +1,7 @@
 import pytest
 
-from PyMake.exceptions import InvalidValueError, MissingRequiredVariableError, UndefinedVariableError, \
+from PyMake.exceptions import InvalidPointerError, InvalidValueError, MissingRequiredVariableError, \
+    UndefinedVariableError, \
     VariableRedefinitionError
 
 
@@ -24,6 +25,10 @@ from PyMake.exceptions import InvalidValueError, MissingRequiredVariableError, U
         ("parser2", "valid_parser2_input4"),
         ("parser2", "valid_parser2_input5"),
         ("parser2", "valid_parser2_input6"),
+        ("parser3", "valid_parser3_input1"),
+        ("parser3", "valid_parser3_input2"),
+        ("parser3", "valid_parser3_input3"),
+        ("parser3", "valid_parser3_input4"),
     ]
 )
 def test_parser_valid(parser, valid_input, request):
@@ -107,3 +112,16 @@ def test_parser_missing_required(parser, invalid_input, request):
     args = request.getfixturevalue(invalid_input)['args']
     with pytest.raises(MissingRequiredVariableError):
         parser.parse(args)
+
+
+@pytest.mark.parametrize(
+    "parser, pointer", [
+        ("parser1", None),
+        ("parser1", 4),
+        ("parser3", 0),
+    ]
+)
+def test_invalid_pointer_value(parser, pointer, request):
+    parser = request.getfixturevalue(parser)
+    with pytest.raises(InvalidPointerError):
+        parser.get_positional(pointer)
