@@ -22,7 +22,7 @@ jobs:
           poetry install
       - name: Test with pytest
         run: |
-          poetry run pytest --cov-report=html
+          poetry run pytest --cov-report term-missing --cov=PyMake
       - name: Lint with Ruff
         run: |
           poetry run ruff check PyMake
