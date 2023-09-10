@@ -298,3 +298,49 @@ def invalid_parser2_invalid_value_5():
     return {
         "args": "--var2 100 --flag1 100"
     }
+
+
+########################################### PARSER 3 TEST ITEMS ########################################################
+@pytest.fixture(scope="function")
+def parser3() -> VarParser:
+    data = """
+    flag: 
+        flag1: "-A"
+    sequence:
+        seq1: [1,2,3,4,5]
+    """
+    data = yaml.safe_load(data)
+    section = VarSection(data)
+    yield section.build()
+
+
+@pytest.fixture(scope="function")
+def valid_parser3_input1():
+    return {
+        "args": "",
+        "namespace": {"seq1": "1 2 3 4 5"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser3_input2():
+    return {
+        "args": "--flag1",
+        "namespace": {"seq1": "1 2 3 4 5", "flag1": "-A"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser3_input3():
+    return {
+        "args": "--seq1 1 2 3 --flag1",
+        "namespace": {"seq1": "1 2 3", "flag1": "-A"}
+    }
+
+
+@pytest.fixture(scope="function")
+def valid_parser3_input4():
+    return {
+        "args": "--flag1 --seq1 1 2 3",
+        "namespace": {"seq1": "1 2 3", "flag1": "-A"}
+    }
