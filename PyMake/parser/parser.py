@@ -171,7 +171,7 @@ class VarParser:
     def handle_value(self, value: str) -> None:
         self._state.handle_value(value)
 
-    def parse(self, args: Union[str, list[str]]) -> None:
+    def parse(self, args: Union[str, list[str]]) -> NameSpaceType:
         self.namespace = self._init_namespace()
         self._state = self._init_state()
         tokens = Tokenizer.tokenize(args)
@@ -197,6 +197,8 @@ class VarParser:
         # Trim sequence var:
         for var in self._seq_vars:
             self.namespace[var] = " ".join([str(i) for i in self.namespace[var]])
+
+        return self.namespace
 
 
 class EnvParser:
