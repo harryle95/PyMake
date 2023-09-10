@@ -12,6 +12,11 @@ def valid_arg_1() -> str:
 
 
 @pytest.fixture(scope="function")
+def valid_arg_1_list() -> list[str]:
+    return ["--arg1", "10", "--arg2", "100", "-arg3"]
+
+
+@pytest.fixture(scope="function")
 def valid_arg_1_values() -> List[str]:
     return ["arg1", "10", "arg2", "100", "arg3"]
 
@@ -24,6 +29,11 @@ def valid_arg_1_options() -> List[bool]:
 @pytest.fixture(scope="function")
 def valid_arg_2() -> str:
     return "1 --arg1 10 100"
+
+
+@pytest.fixture(scope="function")
+def valid_arg_2_list() -> list[str]:
+    return ["1", "--arg1", "10", "100"]
 
 
 @pytest.fixture(scope="function")
@@ -49,7 +59,9 @@ def invalid_arg_2() -> str:
 @pytest.mark.parametrize(
     "test_input, exp_value, exp_option", [
         ("valid_arg_1", "valid_arg_1_values", "valid_arg_1_options"),
-        ("valid_arg_2", "valid_arg_2_values", "valid_arg_2_options")
+        ("valid_arg_2", "valid_arg_2_values", "valid_arg_2_options"),
+        ("valid_arg_1_list", "valid_arg_1_values", "valid_arg_1_options"),
+        ("valid_arg_2_list", "valid_arg_2_values", "valid_arg_2_options"),
     ]
 )
 def test_valid_inputs(test_input, exp_value, exp_option, request):
