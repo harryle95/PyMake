@@ -44,6 +44,7 @@ class Block(Generic[T, S], abc.ABC):
             raise e
 
     @classmethod
+    @abc.abstractmethod
     def _create_atom(cls, index, name, default) -> T:
         return NotImplemented
 

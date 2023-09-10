@@ -13,7 +13,24 @@ pydantic = "^2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.1"
+coverage = "^7.3.1"
+pytest-cov = "^4.1.0"
+ruff = "^0.0.287"
+mypy = "^1.5.1"
+black = "^23.9.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.report]
+exclude_also = [
+    "def __repr__",
+    "@(abc\\.)?abstractmethod",
+    "def __getattr__"
+]
+
+[tool.ruff]
+line-length = 88
+src = ["PyMake"]
+target-version = "py310"

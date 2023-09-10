@@ -24,7 +24,8 @@ class Token:
             if self._value.startswith("-") and self._value[1] != "-":
                 return self._value[1:]
             raise KeywordFormatError(
-                f"Keyword variable assignment must be prepended with either - or --. You defined: {self._value}"
+                f"Keyword variable assignment must be prepended with either - or --. "
+                f"You defined: {self._value}"
             )
         return self._value
 
