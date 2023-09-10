@@ -461,6 +461,15 @@ def invalid_value_yaml_5():
     """
     return {"raw": raw}
 
+@pytest.fixture(scope="function")
+def invalid_value_yaml_6():
+    raw = """
+    -base
+    -sequence
+    -var
+    """
+    return {"raw": raw}
+
 
 @pytest.mark.parametrize(
     "test_suite", [
@@ -514,7 +523,8 @@ def test_invalid_validation_yaml(test_suite, request):
         "invalid_value_yaml_2",
         "invalid_value_yaml_3",
         "invalid_value_yaml_4",
-        "invalid_value_yaml_5"
+        "invalid_value_yaml_5",
+        "invalid_value_yaml_6"
     ]
 )
 def test_invalid_value_yaml(test_suite, request):
