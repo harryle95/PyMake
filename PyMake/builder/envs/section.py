@@ -1,6 +1,8 @@
 import re
 from typing import Any
 
+from PyMake.parser.parser import EnvParser
+
 
 class EnvSection:
     def __init__(self, data: Any) -> None:
@@ -23,3 +25,9 @@ class EnvSection:
                 self.referenced_vars[k] = match[0]
             else:
                 self.declared_vars[k] = v
+
+    def build(self) -> EnvParser:
+        return EnvParser(
+            declared_vars=self.declared_vars,
+            referenced_vars=self.referenced_vars,
+        )
