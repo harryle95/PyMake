@@ -133,7 +133,8 @@ class VarParser:
             return ExpectOption(context=self)
         return ExpectOptionValue(context=self, allow_positional=True, pointer=0)
 
-    def _init_namespace(self) -> NameSpaceType:
+    @staticmethod
+    def _init_namespace() -> NameSpaceType:
         return {}
 
     def transition(self, state: State):

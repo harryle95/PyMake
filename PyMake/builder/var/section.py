@@ -17,9 +17,9 @@ class VarSection:
         self.required = []
         self.default = {}
         if data:
-            self.add_blocks(data)
+            self._add_blocks(data)
 
-    def add_blocks(self, data):
+    def _add_blocks(self, data):
         if not isinstance(data, dict):
             raise ValueError("Var section must be defined as a dictionary")
         unhandled_key = [k for k in data if k not in FACTORY]
