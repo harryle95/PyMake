@@ -15,6 +15,7 @@ from PyMake.parser.tokens import Tokenizer
 NameSpaceType = dict[str, Union[str, list[str]]]
 OptionType = Literal["basic", "flag", "sequence"]
 DefaultType = Union[int, float, str, list[int], list[float], list[str]]
+EnvType = dict[str, str]
 
 
 class State(abc.ABC):
@@ -133,7 +134,8 @@ class VarParser:
             return ExpectOption(context=self)
         return ExpectOptionValue(context=self, allow_positional=True, pointer=0)
 
-    def _init_namespace(self) -> NameSpaceType:
+    @staticmethod
+    def _init_namespace() -> NameSpaceType:
         return {}
 
     def transition(self, state: State):
@@ -169,7 +171,7 @@ class VarParser:
     def handle_value(self, value: str) -> None:
         self._state.handle_value(value)
 
-    def parse(self, args: Union[str, list[str]]) -> None:
+    def parse(self, args: Union[str, list[str]]) -> NameSpaceType:
         self.namespace = self._init_namespace()
         self._state = self._init_state()
         tokens = Tokenizer.tokenize(args)
@@ -195,3 +197,36 @@ class VarParser:
         # Trim sequence var:
         for var in self._seq_vars:
             self.namespace[var] = " ".join([str(i) for i in self.namespace[var]])
+
+        return self.namespace
+
+
+class EnvParser:
+    def __init__(self, declared_vars: EnvType, referenced_vars: EnvType):
+        self.declared_vars = declared_vars
+        self.referenced_vars = referenced_vars
+        self.referenced_value = self._init_value()
+
+    @staticmethod
+    def _init_value() -> EnvType:
+        return {}
+
+    @property
+    def namespace(self) -> NameSpaceType:
+        replaced_val = {
+            k: self.referenced_value[v] for k, v in self.referenced_vars.items()
+        }
+        default_val = {k: v for k, v in self.declared_vars.items()}
+        default_val.update(replaced_val)
+        return default_val
+
+    def parse(self, var_namespace: NameSpaceType):
+        for env_var, ref_var in self.referenced_vars.items():
+            if ref_var not in var_namespace:
+                raise MissingRequiredVariableError(
+                    f"Required env var {ref_var} not provided"
+                )
+            # Note that ref_val should be a string now
+            ref_val = var_namespace[ref_var]
+            self.referenced_value[ref_var] = ref_val
+        return self.namespace
