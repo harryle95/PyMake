@@ -6,13 +6,23 @@ from typing import Any, ClassVar, Generic, Literal, TypeVar, Union
 from pydantic import TypeAdapter
 from pydantic.dataclasses import dataclass
 
-from PyMake.builder.var.atom import Atom, BasicAtom, BasicType, FlagAtom, FlagType, SequenceAtom, SequenceType
+from PyMake.builder.var.atom import (
+    Atom,
+    BasicAtom,
+    BasicType,
+    FlagAtom,
+    FlagType,
+    SequenceAtom,
+    SequenceType,
+)
 
 UNSET = -1
 
 BasicBlockType = Union[list[str], dict[str, BasicType]]
 FlagBlockType = dict[str, FlagType]
-SequenceBlockType = Union[list[str], dict[str, Union[SequenceType, Literal['REQUIRED']]]]
+SequenceBlockType = Union[
+    list[str], dict[str, Union[SequenceType, Literal["REQUIRED"]]]
+]
 
 T = TypeVar("T", bound=Atom)
 S = TypeVar("S")
@@ -37,9 +47,12 @@ class Block(Generic[T, S], abc.ABC):
             # Create atom mapping from coerced data
             if isinstance(value, list):
                 value = {name: None for name in value}
-            self._mapping = {name.strip().lower(): self._create_atom(index, name.strip().lower(), value[name]) for
-                             index, name in
-                             enumerate(value)}
+            self._mapping = {
+                name.strip().lower(): self._create_atom(
+                    index, name.strip().lower(), value[name]
+                )
+                for index, name in enumerate(value)
+            }
         except Exception as e:
             raise e
 
@@ -79,6 +92,8 @@ class SequenceBlock(Block[SequenceAtom, SequenceBlockType]):
     class_type = SequenceBlockType
 
     @classmethod
-    def _create_atom(cls, index: int, name: str, default: Union[SequenceType, Literal['REQUIRED']]) -> SequenceAtom:
+    def _create_atom(
+        cls, index: int, name: str, default: Union[SequenceType, Literal["REQUIRED"]]
+    ) -> SequenceAtom:
         atom = SequenceAtom(_name=name, _default=default)
         return atom

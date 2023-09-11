@@ -36,6 +36,7 @@ class Atom(abc.ABC):
         - var2 with default value of 10 and is not required
         - var3 with default value of 100 and is not required
     """
+
     _name: str
 
     @property
@@ -99,7 +100,7 @@ class FlagAtom(Atom):
 
 @dataclass
 class SequenceAtom(Atom):
-    _default: Optional[Union[SequenceType, Literal['REQUIRED']]]
+    _default: Optional[Union[SequenceType, Literal["REQUIRED"]]]
 
     @property
     def default(self) -> Optional[SequenceType]:

@@ -35,7 +35,7 @@ def test_basic_error_invalid_set_position():
 
 def test_flag_error_no_default():
     with pytest.raises(ValidationError):
-        atom = FlagAtom(_name="var1")
+        FlagAtom(_name="var1")
 
 
 def test_flag_valid():
@@ -46,7 +46,7 @@ def test_flag_valid():
 
 def test_sequence_error_default():
     with pytest.raises(ValidationError):
-        atom = SequenceAtom(_name="var1", _default="required")
+        SequenceAtom(_name="var1", _default="required")
 
 
 def test_sequence_required():

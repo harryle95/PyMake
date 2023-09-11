@@ -122,7 +122,7 @@ def env_invalid_type_error1():
 def env_invalid_type_error2():
     definition = """
     envs:
-        OS: 
+        OS:
             A: 1
             B: 2
     """
@@ -158,7 +158,7 @@ def test_valid_input(valid_input, request):
 def test_value_error(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     with pytest.raises(ValueError):
-        section = EnvSection(invalid_input["data"])
+        EnvSection(invalid_input["data"])
 
 
 @pytest.mark.parametrize(
@@ -171,4 +171,4 @@ def test_value_error(invalid_input, request):
 def test_type_error(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     with pytest.raises(TypeError):
-        section = EnvSection(invalid_input["data"])
+        EnvSection(invalid_input["data"])

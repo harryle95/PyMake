@@ -1,26 +1,26 @@
-# var 
+# var
 
-Represents variables that can be entered from the CLI. `var` allows users to interract with the target build environment, setting variables to be used for commands or setting up runtime environment. 
+Represents variables that can be entered from the CLI. `var` allows users to interract with the target build environment, setting variables to be used for commands or setting up runtime environment.
 
 ## var types
 
-There are three types of variables: 
+There are three types of variables:
 
-- Basic Variables: of type `int`, `float`, `string`, `boolean` that expect exactly one value followed. 
+- Basic Variables: of type `int`, `float`, `string`, `boolean` that expect exactly one value followed.
 - Flag Variables: used for setting options. Do not expect any value.
-- Array Variables: of type `list`. Expect at least one value to follow. 
+- Array Variables: of type `list`. Expect at least one value to follow.
 
 ## Basic variables
 
 ### As required arguments
 
-Flow style: 
+Flow style:
 
 ```
 #PyMakefile
 
 target:
-    var: 
+    var:
         basic: [var1, var2, var3]
 ```
 
@@ -30,21 +30,21 @@ Block style:
 #PyMakefile
 
 target:
-    var: 
-        basic: 
+    var:
+        basic:
             - var1
             - var2
             - var3
 ```
 
 ### With default values:
-Flow style: 
+Flow style:
 
 ```
 #PyMakefile
 
 target:
-    var: 
+    var:
         basic: {var1: 10, var2: 20, var3: 30}
 ```
 
@@ -54,8 +54,8 @@ Block style:
 #PyMakefile
 
 target:
-    var: 
-        basic: 
+    var:
+        basic:
             var1: 10
             var2: 20
             var3: 30
@@ -68,18 +68,18 @@ The only permitted way is Block style, with all required arguments listed first,
 ```
 #PyMakefile:
 target:
-    var: 
-        basic: 
+    var:
+        basic:
             var1: REQUIRED
             var2: 20
             var3: 30
 ```
 
-Here `var1` is a required variable, and `var2`, `var3` are optional. 
+Here `var1` is a required variable, and `var2`, `var3` are optional.
 
 ## Flag variables
 
-Flag variables are associated with variables defined with `set_action="stored_true"` in Python `argparse` or option flag bits in bash command - i.e. `ls -a`. Flag variables are defined as follows: 
+Flag variables are associated with variables defined with `set_action="stored_true"` in Python `argparse` or option flag bits in bash command - i.e. `ls -a`. Flag variables are defined as follows:
 
 ```
 #PyMakefile
@@ -110,27 +110,27 @@ If a flag is not called at invocation, it will not be injected into the corespon
 pymake ls --long --all --recursive
 ```
 
-is equivalent to 
+is equivalent to
 
 ```
 ls -l -a -R
 ```
 
-where as 
+where as
 
 ```
 pymake ls
 ```
 
-is equivalent to 
+is equivalent to
 
 ```
-ls 
+ls
 ```
 
 ## List variables
 
-List variables are associated with parser arguments with `nargs="+"`. Similar to basic variables, list variables can be defined in flow style or block style. When defining list variables with default value, it is recommended to use block style with default value set as Python list: 
+List variables are associated with parser arguments with `nargs="+"`. Similar to basic variables, list variables can be defined in flow style or block style. When defining list variables with default value, it is recommended to use block style with default value set as Python list:
 
 ```
 #PyMakefile
@@ -144,24 +144,24 @@ target:
         - python script.py --list_val1 $(var1) --list_val2 (var2)
 ```
 
-In this example, `var1` is a required parameter while `var2` is optional. If `target` is invoked with the following command: 
+In this example, `var1` is a required parameter while `var2` is optional. If `target` is invoked with the following command:
 
 ```
 pymake target --var1 1 2 3
 ```
 
-The program will run 
+The program will run
 
 ```
 python script.py --list_val1 1 2 3 --list_val2 4 5 6
 ```
-Note that list variables can only be entered using keyword arguments. Also note that if you are using list variable in the CLI, the correct way is 
+Note that list variables can only be entered using keyword arguments. Also note that if you are using list variable in the CLI, the correct way is
 
 ```
 python script.py --list_val1 $(var1) --list_val2 (var2)
 ```
 
-Not 
+Not
 ```
 python script.py --list_val1=$(var1) --list_val2=$(var2)
 ```
@@ -170,7 +170,7 @@ python script.py --list_val1=$(var1) --list_val2=$(var2)
 
 By default, any variable defined in `var` can be defined with a matching flag. Depending on the variable type, input will be parsed, coerced, and associated with the variable.
 
-### Basic variable: 
+### Basic variable:
 
 ```
 # PyMakefile
@@ -180,7 +180,7 @@ target:
     ...
 ```
 
-We can run the target as follows: 
+We can run the target as follows:
 
 ```
 pymake target --var1 10 --var2 100
@@ -192,27 +192,27 @@ Or
 pymake target 10 100
 ```
 
-Or 
+Or
 
 ```
-pymake target 10 --var2 100 
+pymake target 10 --var2 100
 ```
 
 In this example, the value 10 is associated with `var1` and 100 with `var2`. Basic variable is the ONLY variable type that can be entered as positional arguments. Positional values are assigned to basic variables by the order of definition (10 -> `var1`, 100 -> `var2`).
 
-Variables can also be defined with default values: 
+Variables can also be defined with default values:
 
 ```
 # PyMakefile
 target:
     var:
-        basic: 
-            - var1: 10 
+        basic:
+            - var1: 10
             - var2: 100
     ...
 ```
 
-We can execute target by calling: 
+We can execute target by calling:
 
 ```
 pymake target --var1 1000
@@ -224,11 +224,11 @@ Or
 pymake target 1000
 ```
 
-In this case, the value 1000 is entered as a positional argument and is matched with `var1`. No value is entered for `var2` and hence is assigned 100 by default. 
+In this case, the value 1000 is entered as a positional argument and is matched with `var1`. No value is entered for `var2` and hence is assigned 100 by default.
 
 ### Common Errors at Invocation
 
-Referring to the previous example, we will show some ways in which parsing exceptions can occur: 
+Referring to the previous example, we will show some ways in which parsing exceptions can occur:
 
 #### Positional after keyword
 
@@ -246,7 +246,7 @@ The following invocations will raise a `MultipleDefinitions` exception:
 pymake target 10 --var1 100
 ```
 
-Or 
+Or
 
 ```
 pymake target --var1 10 --var1 100
@@ -259,9 +259,9 @@ pymake target -var5 10
 ```
 This will raise a `UndefinedVariable` exception.
 
-#### Missing required variables: 
+#### Missing required variables:
 
-Referring to this example: 
+Referring to this example:
 
 ```
 # PyMakefile
@@ -277,7 +277,7 @@ Since we do not provide default values for `var1` and `var2`, they are expected.
 pymake target
 ```
 
-Or 
+Or
 ```
 pymake target 10
 ```

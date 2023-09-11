@@ -3,11 +3,7 @@ from typing import Any
 from PyMake.builder.var.block import BasicBlock, FlagBlock, SequenceBlock
 from PyMake.parser.parser import VarParser
 
-FACTORY = {
-    'basic': BasicBlock,
-    'flag': FlagBlock,
-    'sequence': SequenceBlock
-}
+FACTORY = {"basic": BasicBlock, "flag": FlagBlock, "sequence": SequenceBlock}
 
 
 class VarSection:
@@ -42,10 +38,7 @@ class VarSection:
             default=self.default,
         )
 
-    def _update_parser_elements(
-            self,
-            container_type: str
-    ) -> None:
+    def _update_parser_elements(self, container_type: str) -> None:
         container = self.__getattribute__(container_type)
         if container is None:
             return

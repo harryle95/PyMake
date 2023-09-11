@@ -168,7 +168,7 @@ def var_parser2() -> VarParser:
         var1: 100
         var2: REQUIRED
         var3: 100
-    flag: 
+    flag:
         flag1: "-A"
     sequence:
         seq1: [1,2,3,4,5]
@@ -311,7 +311,7 @@ def invalid_var_parser2_invalid_value_5():
 @pytest.fixture(scope="function")
 def var_parser3() -> VarParser:
     data = """
-    flag: 
+    flag:
         flag1: "-A"
     sequence:
         seq1: [1,2,3,4,5]
