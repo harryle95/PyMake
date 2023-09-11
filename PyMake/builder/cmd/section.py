@@ -12,6 +12,8 @@ class CmdSection:
 
         if data:
             self._init(data)
+        else:
+            raise ValueError("CMD section cannot be blank")
 
     def _init(self, data: Union[list[str], str]) -> None:
         if isinstance(data, str):
