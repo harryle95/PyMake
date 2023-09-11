@@ -1,10 +1,10 @@
 import pytest
 import yaml
 
-from PyMake.builder.cmd.section import CmdSection
-from PyMake.builder.envs.section import EnvSection
-from PyMake.builder.var.section import VarSection
-from PyMake.parser.parser import VarParser
+from PyMake.builder.plugin.cmd_plugin import CmdSection
+from PyMake.builder.plugin.env_plugin import EnvSection
+from PyMake.builder.plugin.var_plugin import VarSection
+from PyMake.parser.plugin.var_plugin import VarParser
 
 
 ############################# PARSER 1 TEST ITEMS ######################################
@@ -108,7 +108,7 @@ def valid_var_parser1_input12():
 @pytest.fixture(scope="function")
 def invalid_var_parser1_undefined_variable_1():
     return {
-        "args": "--var 1 2",
+        "args": "--utils 1 2",
     }
 
 
@@ -275,7 +275,7 @@ def invalid_var_parser2_undefined_variable_1():
 @pytest.fixture(scope="function")
 def invalid_var_parser2_undefined_variable_2():
     return {
-        "args": "--var 100 --var1 1000",
+        "args": "--utils 100 --var1 1000",
     }
 
 
@@ -352,12 +352,12 @@ def valid_var_parser3_input4():
 @pytest.fixture(scope="function")
 def env_parser1():
     data = """
-    envs:
+    env:
         env1: 10
         env2: 8080
         env3: $(var2)
     """
-    section = EnvSection(yaml.safe_load(data)["envs"])
+    section = EnvSection(yaml.safe_load(data)["env"])
     yield section.build()
 
 

@@ -1,19 +1,19 @@
 import pytest
 import yaml
 
-from PyMake.builder.envs.section import EnvSection
+from PyMake.builder.plugin.env_plugin import EnvSection
 
 
 @pytest.fixture(scope="function")
 def env_valid_input1():
     definition = """
-    envs:
+    env:
         USERNAME: db_app_dev
         PORT: 1433
         HOST: $(hostname)
         PASSWORD: $(password)
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     declared_vars = {"USERNAME": "db_app_dev", "PORT": "1433"}
     referenced_vars = {"HOST": "hostname", "PASSWORD": "password"}
     return {
@@ -26,9 +26,9 @@ def env_valid_input1():
 @pytest.fixture(scope="function")
 def env_valid_input2():
     definition = """
-    envs:
+    env:
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     declared_vars = {}
     referenced_vars = {}
     return {
@@ -41,13 +41,13 @@ def env_valid_input2():
 @pytest.fixture(scope="function")
 def env_valid_input3():
     definition = """
-    envs:
+    env:
         USERNAME: $(username)
         PORT: $(port)
         HOST: $(hostname)
         PASSWORD: $(password)
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     declared_vars = {}
     referenced_vars = {
         "HOST": "hostname",
@@ -65,12 +65,12 @@ def env_valid_input3():
 @pytest.fixture(scope="function")
 def env_valid_input4():
     definition = """
-    envs:
+    env:
         OS: Linux
         VERSION: 1.0.4
         PLATFORM: AWS
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     declared_vars = {"OS": "Linux", "VERSION": "1.0.4", "PLATFORM": "AWS"}
     referenced_vars = {}
     return {
@@ -83,13 +83,13 @@ def env_valid_input4():
 @pytest.fixture(scope="function")
 def env_invalid_value_error1():
     definition = """
-    envs:
+    env:
         - USERNAME
         - PASSWORD
         - PORT
         - ID
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     return {
         "data": data,
     }
@@ -98,9 +98,9 @@ def env_invalid_value_error1():
 @pytest.fixture(scope="function")
 def env_invalid_value_error2():
     definition = """
-    envs: [PORT, USERNAME]
+    env: [PORT, USERNAME]
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     return {
         "data": data,
     }
@@ -109,10 +109,10 @@ def env_invalid_value_error2():
 @pytest.fixture(scope="function")
 def env_invalid_type_error1():
     definition = """
-    envs:
+    env:
         OS: [A, B, C]
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     return {
         "data": data,
     }
@@ -121,12 +121,12 @@ def env_invalid_type_error1():
 @pytest.fixture(scope="function")
 def env_invalid_type_error2():
     definition = """
-    envs:
+    env:
         OS:
             A: 1
             B: 2
     """
-    data = yaml.safe_load(definition)["envs"]
+    data = yaml.safe_load(definition)["env"]
     return {
         "data": data,
     }

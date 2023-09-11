@@ -24,7 +24,7 @@ class Atom(abc.ABC):
     ```
 
     target:
-        var:
+        utils:
             basic:
                 var1: REQUIRED
                 var2: 10
@@ -105,7 +105,7 @@ class SequenceAtom(Atom):
     @property
     def default(self) -> Optional[SequenceType]:
         if self._default:
-            # Allows for setting sequence var as REQUIRED
+            # Allows for setting sequence utils as REQUIRED
             if isinstance(self._default, str) and self._default.upper() == "REQUIRED":
                 return None
             return self._default

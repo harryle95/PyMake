@@ -1,7 +1,8 @@
 import pytest
 
-from PyMake.exceptions import StateError
-from PyMake.parser.parser import ExpectOption, VarParser
+from PyMake.parser.plugin.utils.exceptions import StateError
+from PyMake.parser.plugin.utils.states import ExpectOption
+from PyMake.parser.plugin.var_plugin import VarParser
 
 
 @pytest.fixture(scope="function")

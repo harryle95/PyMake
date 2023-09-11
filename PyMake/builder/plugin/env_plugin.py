@@ -1,10 +1,11 @@
 import re
 from typing import Any
 
-from PyMake.parser.parser import EnvParser
+from PyMake.builder.plugin.base_plugin import BuilderPlugin
+from PyMake.parser.plugin.env_plugin import EnvParser
 
 
-class EnvSection:
+class EnvSection(BuilderPlugin):
     def __init__(self, data: Any) -> None:
         self.declared_vars = {}
         self.referenced_vars = {}
@@ -18,7 +19,7 @@ class EnvSection:
             raise ValueError("Env section must be defined as a dictionary")
         for k, v in data.items():
             if not isinstance(v, str) and hasattr(v, "__len__"):
-                raise TypeError(f"Sequence type value not allowed for envs vars: {k}")
+                raise TypeError(f"Sequence type value not allowed for env vars: {k}")
             v = str(v)
             match = re.findall(self.pattern, v)
             if match:

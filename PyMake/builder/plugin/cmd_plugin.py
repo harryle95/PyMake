@@ -1,10 +1,11 @@
 import re
 from typing import Any, Union
 
-from PyMake.parser.parser import CmdParser
+from PyMake.builder.plugin.base_plugin import BuilderPlugin
+from PyMake.parser.plugin.cmd_plugin import CmdParser
 
 
-class CmdSection:
+class CmdSection(BuilderPlugin):
     def __init__(self, data: Any) -> None:
         self.referenced_vars = {}
         self.script = ""
