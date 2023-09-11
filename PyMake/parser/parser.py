@@ -201,9 +201,8 @@ class VarParser:
         return self.namespace
 
 
-class EnvParser:
-    def __init__(self, declared_vars: EnvType, referenced_vars: EnvType):
-        self.declared_vars = declared_vars
+class NameSpaceParser(abc.ABC):
+    def __init__(self, referenced_vars: EnvType):
         self.referenced_vars = referenced_vars
         self.referenced_value = self._init_value()
 
@@ -213,20 +212,41 @@ class EnvParser:
 
     @property
     def namespace(self) -> NameSpaceType:
-        replaced_val = {
-            k: self.referenced_value[v] for k, v in self.referenced_vars.items()
-        }
-        default_val = {k: v for k, v in self.declared_vars.items()}
-        default_val.update(replaced_val)
-        return default_val
+        return {k: self.referenced_value[v] for k, v in self.referenced_vars.items()}
 
-    def parse(self, var_namespace: NameSpaceType):
+    def parse(self, var_namespace: NameSpaceType) -> NameSpaceType:
         for env_var, ref_var in self.referenced_vars.items():
             if ref_var not in var_namespace:
                 raise MissingRequiredVariableError(
-                    f"Required env var {ref_var} not provided"
+                    f"Required var {ref_var} not provided"
                 )
             # Note that ref_val should be a string now
             ref_val = var_namespace[ref_var]
             self.referenced_value[ref_var] = ref_val
         return self.namespace
+
+
+class EnvParser(NameSpaceParser):
+    def __init__(self, declared_vars: EnvType, referenced_vars: EnvType):
+        super().__init__(referenced_vars)
+        self.declared_vars = declared_vars
+
+    @property
+    def namespace(self) -> NameSpaceType:
+        replaced_val = super().namespace
+        default_val = {k: v for k, v in self.declared_vars.items()}
+        default_val.update(replaced_val)
+        return default_val
+
+
+class CmdParser(NameSpaceParser):
+    def __init__(self, referenced_vars: EnvType, script: str) -> None:
+        super().__init__(referenced_vars)
+        self.script = script
+
+    @property
+    def parsed_script(self) -> str:
+        parsed = self.script
+        for term, substitute in self.namespace.items():
+            parsed = parsed.replace(term, substitute)
+        return parsed
