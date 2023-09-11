@@ -31,122 +31,160 @@ def valid_sequence_str_output():
 
 @pytest.fixture(scope="function")
 def valid_basic_list_1() -> list[str]:
-    return ['var1', 'var2', 'var3', 'var4']
+    return ["var1", "var2", "var3", "var4"]
 
 
 @pytest.fixture(scope="function")
 def valid_basic_list_1_output():
-    return ('var1', 'var2', 'var3', 'var4'), (None, None, None, None), (True, True, True, True), (0, 1, 2, 3)
+    return (
+        ("var1", "var2", "var3", "var4"),
+        (None, None, None, None),
+        (True, True, True, True),
+        (0, 1, 2, 3),
+    )
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_1():
-    return {'var1': 1, 'var2': 2, 'var3': 3, 'var4': 4}
+    return {"var1": 1, "var2": 2, "var3": 3, "var4": 4}
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_1_output():
-    return ('var1', 'var2', 'var3', 'var4'), (1, 2, 3, 4), (False, False, False, False), (0, 1, 2, 3)
+    return (
+        ("var1", "var2", "var3", "var4"),
+        (1, 2, 3, 4),
+        (False, False, False, False),
+        (0, 1, 2, 3),
+    )
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_2():
-    return {'var1': "REQUIRED", 'var2': 2, 'var3': 3, 'var4': 4}
+    return {"var1": "REQUIRED", "var2": 2, "var3": 3, "var4": 4}
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_2_output():
-    return ('var1', 'var2', 'var3', 'var4'), (None, 2, 3, 4), (True, False, False, False), (0, 1, 2, 3)
+    return (
+        ("var1", "var2", "var3", "var4"),
+        (None, 2, 3, 4),
+        (True, False, False, False),
+        (0, 1, 2, 3),
+    )
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_3():
-    return {'var1': 1, 'var2': 2, 'var3': "REQUIRED", 'var4': 4}
+    return {"var1": 1, "var2": 2, "var3": "REQUIRED", "var4": 4}
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_3_output():
-    return ('var1', 'var2', 'var3', 'var4'), (1, 2, None, 4), (False, False, True, False), (0, 1, 2, 3)
+    return (
+        ("var1", "var2", "var3", "var4"),
+        (1, 2, None, 4),
+        (False, False, True, False),
+        (0, 1, 2, 3),
+    )
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_4():
-    return {'var1': '1', 'var2': '2', 'var3': "REQUIRED", 'var4': 'required'}
+    return {"var1": "1", "var2": "2", "var3": "REQUIRED", "var4": "required"}
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_4_output():
-    return ('var1', 'var2', 'var3', 'var4'), ('1', '2', None, None), (False, False, True, True), (0, 1, 2, 3)
+    return (
+        ("var1", "var2", "var3", "var4"),
+        ("1", "2", None, None),
+        (False, False, True, True),
+        (0, 1, 2, 3),
+    )
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_5():
-    return {'var1': '1.5', 'var2': 2.7, 'var3': "REQUIRED", 'var4': 'required'}
+    return {"var1": "1.5", "var2": 2.7, "var3": "REQUIRED", "var4": "required"}
 
 
 @pytest.fixture(scope="function")
 def valid_basic_dict_5_output():
-    return ('var1', 'var2', 'var3', 'var4'), ('1.5', 2.7, None, None), (False, False, True, True), (0, 1, 2, 3)
+    return (
+        ("var1", "var2", "var3", "var4"),
+        ("1.5", 2.7, None, None),
+        (False, False, True, True),
+        (0, 1, 2, 3),
+    )
 
 
 @pytest.fixture(scope="function")
 def invalid_basic_list_1():
-    return [1, 2, 'var3']
+    return [1, 2, "var3"]
 
 
 @pytest.fixture(scope="function")
 def invalid_basic_list_2():
-    return [{'var1': 1}, 'var2', 'var3']
+    return [{"var1": 1}, "var2", "var3"]
 
 
 @pytest.fixture(scope="function")
 def invalid_basic_list_3():
-    return [('var1', 1), 'var2', 'var3']
+    return [("var1", 1), "var2", "var3"]
 
 
 @pytest.fixture(scope="function")
 def invalid_basic_list_4():
-    return [{'var1': 1}, 'var2', 'var3']
+    return [{"var1": 1}, "var2", "var3"]
 
 
 @pytest.fixture(scope="function")
 def invalid_basic_list_5():
-    return [['var1', 'var2', 'var3', 'var4']]
+    return [["var1", "var2", "var3", "var4"]]
 
 
 @pytest.fixture(scope="function")
 def invalid_flag_list_1() -> list[str]:
-    return ['var1', 'var2', 'var3', 'var4']
+    return ["var1", "var2", "var3", "var4"]
 
 
 @pytest.fixture(scope="function")
 def valid_flag_dict_1():
-    return {'all': "-a", 'recursive': "-R", 'size': "-s"}
+    return {"all": "-a", "recursive": "-R", "size": "-s"}
 
 
 @pytest.fixture(scope="function")
 def valid_flag_dict_1_output():
-    return ('all', 'recursive', 'size'), ('-a', '-R', '-s')
+    return ("all", "recursive", "size"), ("-a", "-R", "-s")
 
 
 @pytest.fixture(scope="function")
 def valid_sequence_dict_1():
-    return {"var1": [1, 2, 3], "var2": [1.5, 2.3], "var3": ['a', 'b', 'c']}
+    return {"var1": [1, 2, 3], "var2": [1.5, 2.3], "var3": ["a", "b", "c"]}
 
 
 @pytest.fixture(scope="function")
 def valid_sequence_dict_1_output():
-    return ["var1", "var2", "var3"], ([1, 2, 3], [1.5, 2.3], ['a', 'b', 'c']), (False, False, False)
+    return (
+        ["var1", "var2", "var3"],
+        ([1, 2, 3], [1.5, 2.3], ["a", "b", "c"]),
+        (False, False, False),
+    )
 
 
 @pytest.fixture(scope="function")
 def valid_sequence_dict_2():
-    return {"var1": "REQUIRED", "var2": [1.5, 2.3], "var3": ['a', 'b', 'c']}
+    return {"var1": "REQUIRED", "var2": [1.5, 2.3], "var3": ["a", "b", "c"]}
 
 
 @pytest.fixture(scope="function")
 def valid_sequence_dict_2_output():
-    return ["var1", "var2", "var3"], (None, [1.5, 2.3], ['a', 'b', 'c']), (True, False, False)
+    return (
+        ["var1", "var2", "var3"],
+        (None, [1.5, 2.3], ["a", "b", "c"]),
+        (True, False, False),
+    )
 
 
 @pytest.fixture(scope="function")
@@ -166,12 +204,12 @@ def valid_sequence_dict_4():
 
 @pytest.fixture(scope="function")
 def valid_sequence_dict_4_output():
-    return ["var1"], ([1, 1.5, "3"], ['REQUIRED', 1.4, "2.5"]), (False, False)
+    return ["var1"], ([1, 1.5, "3"], ["REQUIRED", 1.4, "2.5"]), (False, False)
 
 
 @pytest.fixture(scope="function")
 def valid_sequence_list_1():
-    return ['var1', 'var2', 'var3']
+    return ["var1", "var2", "var3"]
 
 
 @pytest.fixture(scope="function")
@@ -250,15 +288,16 @@ def invalid_sequence_dict_9():
 
 
 @pytest.mark.parametrize(
-    "input_arg, expected", [
-        ('valid_basic_str', 'valid_basic_str_output'),
-        ('valid_basic_list_1', 'valid_basic_list_1_output'),
-        ('valid_basic_dict_1', 'valid_basic_dict_1_output'),
-        ('valid_basic_dict_2', 'valid_basic_dict_2_output'),
-        ('valid_basic_dict_3', 'valid_basic_dict_3_output'),
-        ('valid_basic_dict_4', 'valid_basic_dict_4_output'),
-        ('valid_basic_dict_5', 'valid_basic_dict_5_output'),
-    ]
+    "input_arg, expected",
+    [
+        ("valid_basic_str", "valid_basic_str_output"),
+        ("valid_basic_list_1", "valid_basic_list_1_output"),
+        ("valid_basic_dict_1", "valid_basic_dict_1_output"),
+        ("valid_basic_dict_2", "valid_basic_dict_2_output"),
+        ("valid_basic_dict_3", "valid_basic_dict_3_output"),
+        ("valid_basic_dict_4", "valid_basic_dict_4_output"),
+        ("valid_basic_dict_5", "valid_basic_dict_5_output"),
+    ],
 )
 def test_valid_basic(input_arg, expected, request):
     arg = request.getfixturevalue(input_arg)
@@ -271,13 +310,14 @@ def test_valid_basic(input_arg, expected, request):
 
 
 @pytest.mark.parametrize(
-    "input_arg", [
+    "input_arg",
+    [
         "invalid_basic_list_1",
         "invalid_basic_list_2",
         "invalid_basic_list_3",
         "invalid_basic_list_4",
         "invalid_basic_list_5",
-    ]
+    ],
 )
 def test_invalid_basic(input_arg, request):
     arg = request.getfixturevalue(input_arg)
@@ -286,9 +326,7 @@ def test_invalid_basic(input_arg, request):
 
 
 @pytest.mark.parametrize(
-    "input_arg, expected", [
-        ('valid_flag_dict_1', 'valid_flag_dict_1_output')
-    ]
+    "input_arg, expected", [("valid_flag_dict_1", "valid_flag_dict_1_output")]
 )
 def test_valid_flag(input_arg, expected, request):
     arg = request.getfixturevalue(input_arg)
@@ -300,10 +338,11 @@ def test_valid_flag(input_arg, expected, request):
 
 
 @pytest.mark.parametrize(
-    "input_arg", [
+    "input_arg",
+    [
         "invalid_flag_str",
         "invalid_flag_list_1",
-    ]
+    ],
 )
 def test_invalid_flag(input_arg, request):
     arg = request.getfixturevalue(input_arg)
@@ -312,14 +351,15 @@ def test_invalid_flag(input_arg, request):
 
 
 @pytest.mark.parametrize(
-    "input_arg, expected", [
-        ('valid_sequence_str', 'valid_sequence_str_output'),
-        ('valid_sequence_list_1', 'valid_sequence_list_1_output'),
-        ('valid_sequence_dict_1', 'valid_sequence_dict_1_output'),
-        ('valid_sequence_dict_2', 'valid_sequence_dict_2_output'),
-        ('valid_sequence_dict_3', 'valid_sequence_dict_3_output'),
-        ('valid_sequence_dict_4', 'valid_sequence_dict_4_output'),
-    ]
+    "input_arg, expected",
+    [
+        ("valid_sequence_str", "valid_sequence_str_output"),
+        ("valid_sequence_list_1", "valid_sequence_list_1_output"),
+        ("valid_sequence_dict_1", "valid_sequence_dict_1_output"),
+        ("valid_sequence_dict_2", "valid_sequence_dict_2_output"),
+        ("valid_sequence_dict_3", "valid_sequence_dict_3_output"),
+        ("valid_sequence_dict_4", "valid_sequence_dict_4_output"),
+    ],
 )
 def test_valid_sequence(input_arg, expected, request):
     arg = request.getfixturevalue(input_arg)
@@ -331,7 +371,8 @@ def test_valid_sequence(input_arg, expected, request):
 
 
 @pytest.mark.parametrize(
-    "input_arg", [
+    "input_arg",
+    [
         "invalid_sequence_list_1",
         "invalid_sequence_list_2",
         "invalid_sequence_list_3",
@@ -346,7 +387,7 @@ def test_valid_sequence(input_arg, expected, request):
         "invalid_sequence_dict_7",
         "invalid_sequence_dict_8",
         "invalid_sequence_dict_9",
-    ]
+    ],
 )
 def test_invalid_sequence(input_arg, request):
     arg = request.getfixturevalue(input_arg)
