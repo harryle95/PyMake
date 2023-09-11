@@ -211,6 +211,15 @@ class EnvParser:
     def _init_value() -> EnvType:
         return {}
 
+    @property
+    def namespace(self) -> NameSpaceType:
+        replaced_val = {
+            k: self.referenced_value[v] for k, v in self.referenced_vars.items()
+        }
+        default_val = {k: v for k, v in self.declared_vars.items()}
+        default_val.update(replaced_val)
+        return default_val
+
     def parse(self, var_namespace: NameSpaceType):
         for env_var, ref_var in self.referenced_vars.items():
             if ref_var not in var_namespace:
@@ -221,12 +230,3 @@ class EnvParser:
             ref_val = var_namespace[ref_var]
             self.referenced_value[ref_var] = ref_val
         return self.namespace
-
-    @property
-    def namespace(self) -> NameSpaceType:
-        replaced_val = {
-            k: self.referenced_value[v] for k, v in self.referenced_vars.items()
-        }
-        default_val = {k: v for k, v in self.declared_vars.items()}
-        default_val.update(replaced_val)
-        return default_val

@@ -1,11 +1,12 @@
 import pytest
 import yaml
 
+from PyMake.builder.envs.section import EnvSection
 from PyMake.builder.var.section import VarSection
 from PyMake.parser.parser import VarParser
 
 
-########################################### PARSER 1 TEST ITEMS ########################################################
+############################# PARSER 1 TEST ITEMS ######################################
 @pytest.fixture(scope="function")
 def var_parser1() -> VarParser:
     data = """
@@ -159,7 +160,7 @@ def invalid_var_parser1_variable_redefinition_2():
     }
 
 
-########################################### PARSER 2 TEST ITEMS ########################################################
+############################# PARSER 2 TEST ITEMS ######################################
 @pytest.fixture(scope="function")
 def var_parser2() -> VarParser:
     data = """
@@ -306,7 +307,7 @@ def invalid_var_parser2_invalid_value_5():
     return {"args": "--var2 100 --flag1 100"}
 
 
-########################################### PARSER 3 TEST ITEMS ########################################################
+############################# PARSER 3 TEST ITEMS ######################################
 @pytest.fixture(scope="function")
 def var_parser3() -> VarParser:
     data = """
@@ -344,3 +345,50 @@ def valid_var_parser3_input4():
         "args": "--flag1 --seq1 1 2 3",
         "namespace": {"seq1": "1 2 3", "flag1": "-A"},
     }
+
+
+############################# ENV PARSERS ##############################################
+@pytest.fixture(scope="function")
+def env_parser1():
+    data = """
+    envs:
+        env1: 10
+        env2: 8080
+        env3: $(var2)
+    """
+    section = EnvSection(yaml.safe_load(data)["envs"])
+    yield section.build()
+
+
+@pytest.fixture(scope="function")
+def valid_env_parser1_input1():
+    var_namespace = {"var1": "10", "var2": "20", "var3": 100}
+    env_namespace = {"env1": "10", "env2": "8080", "env3": "20"}
+    return {"var_ns": var_namespace, "env_ns": env_namespace}
+
+
+@pytest.fixture(scope="function")
+def valid_env_parser1_input2():
+    var_namespace = {"var2": "localhost"}
+    env_namespace = {"env1": "10", "env2": "8080", "env3": "localhost"}
+    return {"var_ns": var_namespace, "env_ns": env_namespace}
+
+
+@pytest.fixture(scope="function")
+def valid_env_parser1_input3(var_parser1):
+    args = "--var2 MySQL"
+    var_namespace = var_parser1.parse(args)
+    env_namespace = {"env1": "10", "env2": "8080", "env3": "MySQL"}
+    return {"var_ns": var_namespace, "env_ns": env_namespace}
+
+
+@pytest.fixture(scope="function")
+def invalid_env_parser1_input1():
+    var_namespace = {}
+    return {"var_ns": var_namespace}
+
+
+@pytest.fixture(scope="function")
+def invalid_env_parser1_input2(var_parser3):
+    var_namespace = var_parser3.parse("")
+    return {"var_ns": var_namespace}
