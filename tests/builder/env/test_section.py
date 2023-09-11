@@ -1,138 +1,174 @@
 import pytest
 import yaml
 
-from PyMake.builder.cmd.section import CmdSection
+from PyMake.builder.envs.section import EnvSection
 
 
 @pytest.fixture(scope="function")
-def cmd_valid_input1():
+def env_valid_input1():
     definition = """
-    cmd:
-        - sqlcmd -S $(HOST),$(PORT) -U $(USER) -P $(PASSWORD) -C
-        - python runserver.py --host=$(HOST) --port=$(PORT)
+    envs:
+        USERNAME: db_app_dev
+        PORT: 1433
+        HOST: $(hostname)
+        PASSWORD: $(password)
     """
-    data = yaml.safe_load(definition)["cmd"]
-    referenced_vars = {
-        "$(HOST)": "HOST",
-        "$(PASSWORD)": "PASSWORD",
-        "$(USER)": "USER",
-        "$(PORT)": "PORT",
-    }
-    script = """
-    sqlcmd -S $(HOST),$(PORT) -U $(USER) -P $(PASSWORD) -C
-    python runserver.py --host=$(HOST) --port=$(PORT)"""
-    return {"data": data, "referenced_vars": referenced_vars, "script": script}
-
-
-@pytest.fixture(scope="function")
-def cmd_valid_input2():
-    definition = """
-        cmd:
-            python runserver.py
-    """
-    data = yaml.safe_load(definition)["cmd"]
-    referenced_vars = {}
-    script = "python runserver.py"
-    return {"data": data, "referenced_vars": referenced_vars, "script": script}
-
-
-@pytest.fixture(scope="function")
-def cmd_valid_input3():
-    definition = """
-        cmd: "#bin/bash
-
-            cd $(FOLDER_DIR)
-
-            source $(VENV_PATH) activate
-
-            python runserver.py --host=$(HOST) --port=$(PORT) --db=$(DB)
-
-            python send_log.py --email=$(EMAIL_ADDR) --level=$(debug_level)
-            "
-    """
-    data = yaml.safe_load(definition)["cmd"]
-    referenced_vars = [
-        "FOLDER_DIR",
-        "VENV_PATH",
-        "HOST",
-        "PORT",
-        "DB",
-        "EMAIL_ADDR",
-        "debug_level",
-    ]
-    script = """#bin/bash
-            cd $(FOLDER_DIR)
-            source $(VENV_PATH) activate
-            python runserver.py --host=$(HOST) --port=$(PORT) --db=$(DB)
-            python send_log.py --email=$(EMAIL_ADDR) --level=$(debug_level)
-            """
+    data = yaml.safe_load(definition)["envs"]
+    declared_vars = {"USERNAME": "db_app_dev", "PORT": "1433"}
+    referenced_vars = {"HOST": "hostname", "PASSWORD": "password"}
     return {
         "data": data,
-        "referenced_vars": {f"$({item})": item for item in referenced_vars},
-        "script": script,
+        "declared_vars": declared_vars,
+        "referenced_vars": referenced_vars,
     }
 
 
 @pytest.fixture(scope="function")
-def cmd_invalid_input1():
+def env_valid_input2():
     definition = """
-    cmd:
+    envs:
     """
-    data = yaml.safe_load(definition)["cmd"]
-
-    return {"data": data}
+    data = yaml.safe_load(definition)["envs"]
+    declared_vars = {}
+    referenced_vars = {}
+    return {
+        "data": data,
+        "declared_vars": declared_vars,
+        "referenced_vars": referenced_vars,
+    }
 
 
 @pytest.fixture(scope="function")
-def cmd_invalid_input2():
+def env_valid_input3():
     definition = """
-    cmd: 1
+    envs:
+        USERNAME: $(username)
+        PORT: $(port)
+        HOST: $(hostname)
+        PASSWORD: $(password)
     """
-    data = yaml.safe_load(definition)["cmd"]
-    return {"data": data}
+    data = yaml.safe_load(definition)["envs"]
+    declared_vars = {}
+    referenced_vars = {
+        "HOST": "hostname",
+        "PASSWORD": "password",
+        "USERNAME": "username",
+        "PORT": "port",
+    }
+    return {
+        "data": data,
+        "declared_vars": declared_vars,
+        "referenced_vars": referenced_vars,
+    }
 
 
 @pytest.fixture(scope="function")
-def cmd_invalid_input3():
+def env_valid_input4():
     definition = """
-    cmd:
-        1: cd $HOME
-        2: echo "Hello World from HOME"
+    envs:
+        OS: Linux
+        VERSION: 1.0.4
+        PLATFORM: AWS
     """
-    data = yaml.safe_load(definition)["cmd"]
-    return {"data": data}
+    data = yaml.safe_load(definition)["envs"]
+    declared_vars = {"OS": "Linux", "VERSION": "1.0.4", "PLATFORM": "AWS"}
+    referenced_vars = {}
+    return {
+        "data": data,
+        "declared_vars": declared_vars,
+        "referenced_vars": referenced_vars,
+    }
+
+
+@pytest.fixture(scope="function")
+def env_invalid_value_error1():
+    definition = """
+    envs:
+        - USERNAME
+        - PASSWORD
+        - PORT
+        - ID
+    """
+    data = yaml.safe_load(definition)["envs"]
+    return {
+        "data": data,
+    }
+
+
+@pytest.fixture(scope="function")
+def env_invalid_value_error2():
+    definition = """
+    envs: [PORT, USERNAME]
+    """
+    data = yaml.safe_load(definition)["envs"]
+    return {
+        "data": data,
+    }
+
+
+@pytest.fixture(scope="function")
+def env_invalid_type_error1():
+    definition = """
+    envs:
+        OS: [A, B, C]
+    """
+    data = yaml.safe_load(definition)["envs"]
+    return {
+        "data": data,
+    }
+
+
+@pytest.fixture(scope="function")
+def env_invalid_type_error2():
+    definition = """
+    envs:
+        OS:
+            A: 1
+            B: 2
+    """
+    data = yaml.safe_load(definition)["envs"]
+    return {
+        "data": data,
+    }
 
 
 @pytest.mark.parametrize(
     "valid_input",
     [
-        "cmd_valid_input1",
-        "cmd_valid_input2",
-        "cmd_valid_input3",
+        "env_valid_input1",
+        "env_valid_input2",
+        "env_valid_input3",
+        "env_valid_input4",
     ],
 )
 def test_valid_input(valid_input, request):
     valid_input = request.getfixturevalue(valid_input)
-    section = CmdSection(valid_input["data"])
+    section = EnvSection(valid_input["data"])
+    assert section.declared_vars == valid_input["declared_vars"]
     assert section.referenced_vars == valid_input["referenced_vars"]
-    section_script = [
-        item.strip() for item in section.script.split("\n") if item.strip() != ""
-    ]
-    expected_script = [
-        item.strip() for item in valid_input["script"].split("\n") if item.strip() != ""
-    ]
-    assert section_script == expected_script
 
 
 @pytest.mark.parametrize(
     "invalid_input",
     [
-        "cmd_invalid_input1",
-        "cmd_invalid_input2",
-        "cmd_invalid_input3",
+        "env_invalid_value_error1",
+        "env_invalid_value_error2",
     ],
 )
 def test_value_error(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     with pytest.raises(ValueError):
-        CmdSection(invalid_input["data"])
+        EnvSection(invalid_input["data"])
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "env_invalid_type_error1",
+        "env_invalid_type_error2",
+    ],
+)
+def test_type_error(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    with pytest.raises(TypeError):
+        EnvSection(invalid_input["data"])
