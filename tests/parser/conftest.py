@@ -1,6 +1,7 @@
 import pytest
 import yaml
 
+from PyMake.builder.cmd.section import CmdSection
 from PyMake.builder.envs.section import EnvSection
 from PyMake.builder.var.section import VarSection
 from PyMake.parser.parser import VarParser
@@ -391,4 +392,118 @@ def invalid_env_parser1_input1():
 @pytest.fixture(scope="function")
 def invalid_env_parser1_input2(var_parser3):
     var_namespace = var_parser3.parse("")
+    return {"var_ns": var_namespace}
+
+
+############################# CMD PARSERS ##############################################
+@pytest.fixture(scope="function")
+def cmd_parser1():
+    data = """
+    cmd:
+        - sqlcmd -S $(HOST),$(PORT) -U $(USER) -P $(PASSWORD) -C
+        - python runserver.py --host=$(HOST) --port=$(PORT)
+    """
+    section = CmdSection(yaml.safe_load(data)["cmd"])
+    yield section.build()
+
+
+@pytest.fixture(scope="function")
+def cmd_parser2():
+    data = """
+        cmd:
+            python runserver.py
+    """
+    section = CmdSection(yaml.safe_load(data)["cmd"])
+    yield section.build()
+
+
+@pytest.fixture(scope="function")
+def cmd_parser3():
+    data = """
+        cmd: "#bin/bash
+
+            cd $(FOLDER_DIR)
+
+            source $(VENV_PATH) activate
+
+            python runserver.py --host=$(HOST) --port=$(PORT) --db=$(DB)
+
+            python send_log.py --email=$(EMAIL_ADDR) --level=$(debug_level)
+            "
+    """
+    section = CmdSection(yaml.safe_load(data)["cmd"])
+    yield section.build()
+
+
+@pytest.fixture(scope="function")
+def valid_cmd_parser1_input1():
+    var_namespace = {
+        "HOST": "localhost",
+        "USER": "SA",
+        "PASSWORD": "Password@123456",
+        "PORT": "8080",
+        "DB": "TestDB",
+        "DRIVER": "psycopg",
+    }
+    cmd_namespace = {
+        "$(HOST)": "localhost",
+        "$(USER)": "SA",
+        "$(PASSWORD)": "Password@123456",
+        "$(PORT)": "8080",
+    }
+    script = """
+    sqlcmd -S localhost,8080 -U SA -P Password@123456 -C
+    python runserver.py --host=localhost --port=8080
+    """
+    return {"var_ns": var_namespace, "cmd_ns": cmd_namespace, "script": script}
+
+
+@pytest.fixture(scope="function")
+def valid_cmd_parser2_input1():
+    var_namespace = {
+        "HOST": "localhost",
+        "USER": "SA",
+        "PASSWORD": "Password@123456",
+        "PORT": "8080",
+        "DB": "TestDB",
+        "DRIVER": "psycopg",
+    }
+    cmd_namespace = {}
+    script = """python runserver.py"""
+    return {"var_ns": var_namespace, "cmd_ns": cmd_namespace, "script": script}
+
+
+@pytest.fixture(scope="function")
+def valid_cmd_parser2_input2(var_parser1):
+    args = "--var2 MySQL"
+    var_namespace = var_parser1.parse(args)
+    cmd_namespace = {}
+    script = """python runserver.py"""
+    return {"var_ns": var_namespace, "cmd_ns": cmd_namespace, "script": script}
+
+
+@pytest.fixture(scope="function")
+def invalid_cmd_parser1_input2(var_parser1):
+    args = "--var2 MySQL"
+    var_namespace = var_parser1.parse(args)
+    return {"var_ns": var_namespace}
+
+
+@pytest.fixture(scope="function")
+def invalid_cmd_parser3_input1(var_parser1):
+    var_namespace = {
+        "HOST": "localhost",
+        "USER": "SA",
+        "PASSWORD": "Password@123456",
+        "PORT": "8080",
+        "DB": "TestDB",
+        "DRIVER": "psycopg",
+    }
+    return {"var_ns": var_namespace}
+
+
+@pytest.fixture(scope="function")
+def invalid_cmd_parser3_input2(var_parser1):
+    args = "--var2 MySQL"
+    var_namespace = var_parser1.parse(args)
     return {"var_ns": var_namespace}
