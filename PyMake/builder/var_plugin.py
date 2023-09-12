@@ -1,8 +1,8 @@
 from typing import Any
 
-from PyMake.builder.plugin.base_plugin import BuilderPlugin
-from PyMake.builder.plugin.utils.block import BasicBlock, FlagBlock, SequenceBlock
-from PyMake.parser.plugin.var_plugin import VarParser
+from PyMake.builder.base_plugin import BuilderPlugin
+from PyMake.builder.utils.block import BasicBlock, FlagBlock, SequenceBlock
+from PyMake.parser.var_plugin import VarParser
 
 FACTORY = {"basic": BasicBlock, "flag": FlagBlock, "sequence": SequenceBlock}
 

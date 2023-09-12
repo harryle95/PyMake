@@ -1,8 +1,8 @@
 import abc
 from typing import Any
 
-from PyMake.parser.plugin.utils.exceptions import MissingRequiredVariableError
-from PyMake.parser.plugin.utils.type_alias import NameSpaceType
+from PyMake.parser.utils.exceptions import MissingRequiredVariableError
+from PyMake.parser.utils.type_alias import NameSpaceType
 
 
 class ParserPlugin(abc.ABC):

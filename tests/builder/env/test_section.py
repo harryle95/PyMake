@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from PyMake.builder.plugin.env_plugin import EnvSection
+from PyMake.builder.env_plugin import EnvSection
 
 
 @pytest.fixture(scope="function")

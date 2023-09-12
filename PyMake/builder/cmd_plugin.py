@@ -1,8 +1,8 @@
 import re
 from typing import Any, Union
 
-from PyMake.builder.plugin.base_plugin import BuilderPlugin
-from PyMake.parser.plugin.cmd_plugin import CmdParser
+from PyMake.builder.base_plugin import BuilderPlugin
+from PyMake.parser.cmd_plugin import CmdParser
 
 
 class CmdSection(BuilderPlugin):

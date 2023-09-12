@@ -1,7 +1,7 @@
 import abc
 from typing import Any
 
-from PyMake.parser.plugin.base_plugin import ParserPlugin
+from PyMake.parser.base_plugin import ParserPlugin
 
 
 class BuilderPlugin(abc.ABC):

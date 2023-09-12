@@ -1,8 +1,8 @@
 import re
 from typing import Any
 
-from PyMake.builder.plugin.base_plugin import BuilderPlugin
-from PyMake.parser.plugin.env_plugin import EnvParser
+from PyMake.builder.base_plugin import BuilderPlugin
+from PyMake.parser.env_plugin import EnvParser
 
 
 class EnvSection(BuilderPlugin):

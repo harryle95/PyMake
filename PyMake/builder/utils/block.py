@@ -6,7 +6,7 @@ from typing import Any, ClassVar, Generic, Literal, TypeVar, Union
 from pydantic import TypeAdapter
 from pydantic.dataclasses import dataclass
 
-from PyMake.builder.plugin.utils.atom import (
+from PyMake.builder.utils.atom import (
     Atom,
     BasicAtom,
     BasicType,

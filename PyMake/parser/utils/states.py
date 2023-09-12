@@ -3,14 +3,14 @@ from __future__ import annotations
 import abc
 from typing import Optional, TYPE_CHECKING
 
-from PyMake.parser.plugin.utils.exceptions import (
+from PyMake.parser.utils.exceptions import (
     InvalidValueError,
     StateError,
     VariableRedefinitionError,
 )
 
 if TYPE_CHECKING:
-    from PyMake.parser.plugin.var_plugin import VarParser
+    from PyMake.parser.var_plugin import VarParser
 
 
 class State(abc.ABC):
@@ -53,14 +53,12 @@ class ExpectOption(State):
     def handle_option(self, option: str) -> None:
         if option in self.context.namespace:
             raise VariableRedefinitionError(f"Variable redefinition: {option}")
-        option_type = self.context._get_type(option)
+        option_type = self.context.get_type(option)
         if option_type in ["basic", "sequence"]:
-            self.context._transition(ExpectValue(context=self.context, variable=option))
+            self.context.transition(ExpectValue(context=self.context, variable=option))
         else:
-            self.context._set(option)
-            self.context._transition(
-                ExpectOption(context=self.context, variable=option)
-            )
+            self.context.set(option)
+            self.context.transition(ExpectOption(context=self.context, variable=option))
 
     def handle_value(self, value: str) -> None:
         raise InvalidValueError(
@@ -75,13 +73,13 @@ class ExpectValue(State):
         )
 
     def handle_value(self, value: str) -> None:
-        self.context._set(self.variable, value)
-        if self.context._get_type(self.variable) == "sequence":
-            self.context._transition(
+        self.context.set(self.variable, value)
+        if self.context.get_type(self.variable) == "sequence":
+            self.context.transition(
                 ExpectOptionValue(context=self.context, variable=self.variable)
             )
         else:
-            self.context._transition(
+            self.context.transition(
                 ExpectOption(context=self.context, variable=self.variable)
             )
 
@@ -92,19 +90,19 @@ class ExpectOptionValue(ExpectOption):
             self.handle_positional(value)
         else:
             # Only valid state here is if variable is of sequence type
-            assert self.context._get_type(self.variable) == "sequence"
-            self.context._set(self.variable, value)
+            assert self.context.get_type(self.variable) == "sequence"
+            self.context.set(self.variable, value)
 
     def handle_positional(self, value: str) -> None:
         # Set value to pointer's variable and advance pointer
-        variable = self.context._get_positional(self.pointer)
-        self.context._set(variable, value)
+        variable = self.context.get_positional(self.pointer)
+        self.context.set(variable, value)
         self.pointer += 1
         if self.pointer in self.context.positional:
-            self.context._transition(
+            self.context.transition(
                 ExpectOptionValue(
                     context=self.context, allow_positional=True, pointer=self.pointer
                 )
             )
         else:
-            self.context._transition(ExpectOption(context=self.context))
+            self.context.transition(ExpectOption(context=self.context))

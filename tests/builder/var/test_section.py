@@ -2,7 +2,7 @@ import pytest
 import yaml
 from pydantic_core import ValidationError
 
-from PyMake.builder.plugin.var_plugin import VarSection
+from PyMake.builder.var_plugin import VarSection
 
 
 @pytest.fixture(scope="function")

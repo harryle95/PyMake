@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from PyMake.builder.plugin.cmd_plugin import CmdSection
+from PyMake.builder.cmd_plugin import CmdSection
 
 
 @pytest.fixture(scope="function")

@@ -1,16 +1,16 @@
 # TODO : Implement state pattern for input parsing
 from typing import Optional, Union
 
-from PyMake.parser.plugin.base_plugin import ParserPlugin
-from PyMake.parser.plugin.utils.exceptions import (
+from PyMake.parser.base_plugin import ParserPlugin
+from PyMake.parser.utils.exceptions import (
     InvalidPointerError,
     MissingRequiredVariableError,
     UndefinedVariableError,
 )
-from PyMake.parser.plugin.utils.states import ExpectOption, ExpectOptionValue
-from PyMake.parser.plugin.utils.states import State
-from PyMake.parser.plugin.utils.tokens import Tokenizer
-from PyMake.parser.plugin.utils.type_alias import (
+from PyMake.parser.utils.states import ExpectOption, ExpectOptionValue
+from PyMake.parser.utils.states import State
+from PyMake.parser.utils.tokens import Tokenizer
+from PyMake.parser.utils.type_alias import (
     DefaultType,
     NameSpaceType,
     OptionType,
@@ -34,7 +34,7 @@ class VarParser(ParserPlugin):
         self.required = required
         self.namespace = self._init_namespace()
         self._state = self._init_state()
-        self._seq_vars = [v for v in self.variables if self._get_type(v) == "sequence"]
+        self._seq_vars = [v for v in self.variables if self.get_type(v) == "sequence"]
 
     def _init_state(self) -> State:
         if len(self.positional) == 0:
@@ -45,28 +45,28 @@ class VarParser(ParserPlugin):
     def _init_namespace() -> NameSpaceType:
         return {}
 
-    def _transition(self, state: State):
+    def transition(self, state: State):
         self._state = state
 
     # noinspection PyTypeChecker
-    def _set(self, variable: str, value: Optional[str] = None) -> None:
-        if self._get_type(variable) == "sequence":
+    def set(self, variable: str, value: Optional[str] = None) -> None:
+        if self.get_type(variable) == "sequence":
             if variable not in self.namespace:
                 self.namespace[variable] = []
             self.namespace[variable].append(value)
-        elif self._get_type(variable) == "basic":
+        elif self.get_type(variable) == "basic":
             self.namespace[variable] = value
         else:
             self.namespace[variable] = self.default[variable]
 
-    def _get_type(self, variable: str) -> OptionType:
+    def get_type(self, variable: str) -> OptionType:
         if variable in self.variables:
             return self.variables[variable]
         raise UndefinedVariableError(
             f"Variable {variable} was not defined in the var section"
         )
 
-    def _get_positional(self, pointer: int) -> str:
+    def get_positional(self, pointer: int) -> str:
         if pointer is None:
             raise InvalidPointerError("Pointer is undefined")
         if pointer in self.positional:
@@ -92,9 +92,9 @@ class VarParser(ParserPlugin):
         # Add default values:
         for var in self.default:
             if var not in self.namespace:
-                if self._get_type(var) == "basic":
-                    self._set(var, str(self.default[var]))
-                if self._get_type(var) == "sequence":
+                if self.get_type(var) == "basic":
+                    self.set(var, str(self.default[var]))
+                if self.get_type(var) == "sequence":
                     self.namespace[var] = self.default[var]
 
         # Validate all required:

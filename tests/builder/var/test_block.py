@@ -1,7 +1,7 @@
 import pytest
 from pydantic_core import ValidationError
 
-from PyMake.builder.plugin.utils.block import BasicBlock, FlagBlock, SequenceBlock
+from PyMake.builder.utils.block import BasicBlock, FlagBlock, SequenceBlock
 
 
 @pytest.fixture(scope="function")

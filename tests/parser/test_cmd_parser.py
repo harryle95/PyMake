@@ -1,6 +1,6 @@
 import pytest
 
-from PyMake.parser.plugin.utils.exceptions import MissingRequiredVariableError
+from PyMake.parser.utils.exceptions import MissingRequiredVariableError
 
 
 @pytest.mark.parametrize(

@@ -1,10 +1,10 @@
 import pytest
 import yaml
 
-from PyMake.builder.plugin.cmd_plugin import CmdSection
-from PyMake.builder.plugin.env_plugin import EnvSection
-from PyMake.builder.plugin.var_plugin import VarSection
-from PyMake.parser.plugin.var_plugin import VarParser
+from PyMake.builder.cmd_plugin import CmdSection
+from PyMake.builder.env_plugin import EnvSection
+from PyMake.builder.var_plugin import VarSection
+from PyMake.parser.var_plugin import VarParser
 
 
 ############################# PARSER 1 TEST ITEMS ######################################

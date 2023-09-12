@@ -1,7 +1,7 @@
 import pytest
 from pydantic_core import ValidationError
 
-from PyMake.builder.plugin.utils.atom import BasicAtom, FlagAtom, SequenceAtom
+from PyMake.builder.utils.atom import BasicAtom, FlagAtom, SequenceAtom
 
 
 def test_basic_required():

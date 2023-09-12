@@ -1,6 +1,6 @@
 import pytest
 
-from PyMake.parser.plugin.utils.exceptions import (
+from PyMake.parser.utils.exceptions import (
     InvalidPointerError,
     InvalidValueError,
     MissingRequiredVariableError,
@@ -135,4 +135,4 @@ def test_var_parser_missing_required(var_parser, invalid_input, request):
 def test_invalid_pointer_value(var_parser, pointer, request):
     var_parser = request.getfixturevalue(var_parser)
     with pytest.raises(InvalidPointerError):
-        var_parser._get_positional(pointer)
+        var_parser.get_positional(pointer)

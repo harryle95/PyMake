@@ -1,5 +1,5 @@
-from PyMake.parser.plugin.base_plugin import NameSpaceParser
-from PyMake.parser.plugin.utils.type_alias import NameSpaceType
+from PyMake.parser.base_plugin import NameSpaceParser
+from PyMake.parser.utils.type_alias import NameSpaceType
 
 
 class EnvParser(NameSpaceParser):

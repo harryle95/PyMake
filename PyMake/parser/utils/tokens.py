@@ -1,7 +1,7 @@
 import shlex
 from typing import List, Union
 
-from PyMake.parser.plugin.utils.exceptions import KeywordFormatError
+from PyMake.parser.utils.exceptions import KeywordFormatError
 
 
 class Token:
