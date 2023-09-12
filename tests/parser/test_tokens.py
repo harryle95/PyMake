@@ -2,8 +2,8 @@ from typing import List
 
 import pytest
 
-from PyMake.exceptions import KeywordFormatError
-from PyMake.parser.tokens import Tokenizer
+from PyMake.parser.utils.exceptions import KeywordFormatError
+from PyMake.parser.utils.tokens import Tokenizer
 
 
 @pytest.fixture(scope="function")

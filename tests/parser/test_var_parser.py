@@ -1,6 +1,6 @@
 import pytest
 
-from PyMake.exceptions import (
+from PyMake.parser.utils.exceptions import (
     InvalidPointerError,
     InvalidValueError,
     MissingRequiredVariableError,
