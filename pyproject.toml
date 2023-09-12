@@ -1,12 +1,15 @@
 [tool.poetry]
-name = "pymake"
-version = "0.1.0"
-description = "CLI Wrapper"
+name = "PythonMake"
+version = "0.0.4"
+description = "Makefile but modern"
 authors = ["hoangson <lehoangsonsg@gmail.com>"]
 readme = "README.md"
+packages = [
+    {include="PyMake"}
+]
 
 [tool.poetry.dependencies]
-python = ">3.10,<3.11"
+python = ">=3.10"
 PyYAML = "^6.0.1"
 pydantic = "^2.3.0"
 
@@ -17,6 +20,10 @@ pytest-cov = "^4.1.0"
 ruff = "^0.0.287"
 black = "^23.9.0"
 pre-commit = "^3.4.0"
+
+[tool.poetry.scripts]
+pymake = "PyMake.main:main"
+
 
 [build-system]
 requires = ["poetry-core"]
