@@ -23,95 +23,84 @@ SequenceType = list[str] | dict[str, AtomType | list[AtomType] | None] | None
 
 @validate_raise_exception(InvalidBasicVarType)
 class BasicModel(BaseModel):
-    basic: BasicType = None
+    basic: BasicType = {}
 
     @property
     def positional(self) -> list[str]:
-        if self.basic:
-            return [key for key in self.basic]
-        return []
+        return [key for key in self.basic]
 
     @property
     def default(self) -> dict[str, str]:
-        if self.basic:
-            return {
-                key: str(value).strip()
-                for key, value in self.basic.items()
-                if (value and str(value).strip() != "")
-            }
-        return {}
+        return {
+            key: str(value).strip()
+            for key, value in self.basic.items()
+            if (value and str(value).strip() != "")
+        }
 
     @property
     def required(self) -> list[str]:
-        if self.basic:
-            return [
-                key
-                for key, value in self.basic.items()
-                if value is None or str(value).strip() == ""
-            ]
-        return []
+        return [
+            key
+            for key, value in self.basic.items()
+            if value is None or str(value).strip() == ""
+        ]
 
 
 @validate_raise_exception(InvalidOptionVarType)
 class OptionModel(BaseModel):
-    option: OptionType = None
+    option: OptionType = {}
 
     @property
     def default(self) -> dict[str, str]:
         _default = {}
-        if self.option:
-            for key, value in self.option.items():
-                if value.strip() == "":
-                    raise InvalidOptionVarType(
-                        f"option variables must not be empty. Error detected for: {key}"
-                    )
-                _default[key] = value.strip()
+        for key, value in self.option.items():
+            if value.strip() == "":
+                raise InvalidOptionVarType(
+                    f"option variables must not be empty. Error detected for: {key}"
+                )
+            _default[key] = value.strip()
         return _default
 
 
 @validate_raise_exception(InvalidSequenceVarType)
 class SequenceModel(BaseModel):
-    sequence: SequenceType = None
+    sequence: SequenceType = {}
 
     @property
     def default(self) -> dict[str, str]:
         _default = {}
-        if self.sequence:
-            for key, value in self.sequence.items():
-                if isinstance(value, str):
-                    _default[key] = value
-                elif hasattr(value, "__len__"):
-                    _default[key] = " ".join(
-                        [str(item).strip() for item in value]
-                    ).strip()
-                else:
-                    _default[key] = str(value).strip()
+        for key, value in self.sequence.items():
+            if isinstance(value, str):
+                _default[key] = value
+            elif hasattr(value, "__len__"):
+                _default[key] = " ".join([str(item).strip() for item in value]).strip()
+            else:
+                _default[key] = str(value).strip()
         return _default
 
     @property
     def required(self) -> list[str]:
-        if self.sequence:
-            return [
-                key
-                for key, value in self.sequence.items()
-                if value is None or str(value).strip() == ""
-            ]
-        return []
+        return [
+            key
+            for key, value in self.sequence.items()
+            if value is None or str(value).strip() == ""
+        ]
 
 
 @validate_raise_exception(UnrecognisedVarKeyword)
 class VarModel(BaseModel):
-    data: VarType
+    data: VarType = {}
     basic: BasicModel = BasicModel()
     option: OptionModel = OptionModel()
     sequence: SequenceModel = SequenceModel()
 
     def build(self):
-        if self.data:
-            self.basic = BasicModel(basic=self.data.get("basic"))
-            self.option = OptionModel(option=self.data.get("option"))
-            self.sequence = SequenceModel(sequence=self.data.get("sequence"))
-            self.validate_var()
+        if self.data is None:
+            self.data = {}
+        self.basic = BasicModel(basic=self.data.get("basic", {}))
+        self.option = OptionModel(option=self.data.get("option", {}))
+        self.sequence = SequenceModel(sequence=self.data.get("sequence", {}))
+        self.validate_var()
 
     def validate_var(self):
         """
@@ -123,19 +112,19 @@ class VarModel(BaseModel):
         basic_option = basic_keys.intersection(option_keys)
         if basic_option:
             raise RedefinedVariable(
-                f"The following variables were declared in "
+                f"The following variable(s) were declared in "
                 f"both basic and option: {basic_option}"
             )
         basic_sequence = basic_keys.intersection(sequence_keys)
         if basic_sequence:
             raise RedefinedVariable(
-                f"The following variables were declared in "
+                f"The following variable(s) were declared in "
                 f"both basic and sequence: {basic_sequence}"
             )
         option_sequence = option_keys.intersection(sequence_keys)
         if option_sequence:
             raise RedefinedVariable(
-                f"The following variables were declared in "
+                f"The following variable(s) were declared in "
                 f"both basic and sequence: {option_sequence}"
             )
 
@@ -163,23 +152,3 @@ class VarModel(BaseModel):
     @property
     def required(self) -> list[str]:
         return self.basic.required + self.sequence.required
-
-
-if __name__ == "__main__":
-    import yaml
-
-    data = """
-    var:
-        basic:
-            var1: 1
-            var2: 2
-            var3: 3
-        option:
-            all: "-a"
-        sequence:
-            var4: [1,2,3,4]
-    """
-    data = yaml.safe_load(data)["var"]
-    var = VarModel(data=data)
-    var.build()
-    print("End")
