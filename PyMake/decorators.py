@@ -1,11 +1,9 @@
-from typing import Any, Type
+from typing import Any
 
 from pydantic import ValidationError
 
-from .exceptions import PyMakeError
 
-
-def validate_raise_exception(exception: Type[PyMakeError]):
+def validate_raise_exception(exception):
     def decorator(decorated):
         decorated_init = decorated.__init__
 
@@ -13,7 +11,7 @@ def validate_raise_exception(exception: Type[PyMakeError]):
             try:
                 decorated_init(__pydantic_self__, **data)
             except ValidationError:
-                raise exception("invalid section data type")
+                raise exception("Invalid data type encounter in PyMake element")
 
         decorated.__init__ = __init__
         return decorated

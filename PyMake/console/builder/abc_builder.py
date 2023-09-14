@@ -2,11 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel, field_validator
 
-from PyMake.decorators import validate_raise_exception
-from PyMake.exceptions import PyMakeFormatError
 
-
-@validate_raise_exception(PyMakeFormatError)
 class DictDefaultModel(BaseModel):
     data: Any
 
@@ -22,7 +18,6 @@ class DictDefaultModel(BaseModel):
         return data
 
 
-@validate_raise_exception(PyMakeFormatError)
 class ListDefaultModel(BaseModel):
     data: Any
 

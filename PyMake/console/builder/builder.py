@@ -78,30 +78,32 @@ if __name__ == "__main__":
     target:
         var:
             basic:
-                basic1: 100
-                basic2: 10
-                basic3: 1000
-                basic4: null
-            option:
-                quiet: --quiet
+                var1: 10
+                var2: 2
+                var3: 14
+            option: 
+                all: "-all"
+                quiet: "-quiet"
             sequence:
-                values: [10, 20, 30]
+                list1: null
+                list2: null
         env:
-            ENV1: $(basic1)
-            ENV2: $(basic2)
+            env1: $(var1)
+            env2: $(var2)
         cmd:
-            - python3 script1.py --arg1 $(basic1) $(quiet) --values $(values)
-            - python3 script1.py $(basic2) $(basic3) $(basic4)
+            - python script1.py
+            - python script2.py 
     """
+
     data = yaml.safe_load(data)["target"]
     builder = Builder(data=data)
     builder.build()
-    print(builder.vars)
-    print(builder.positional)
-    print(builder.default)
-    print(builder.required)
-    print(builder.flag)
-    print(builder.commands)
-    print(builder.envs)
+    print(f"All Vars: {builder.vars}")
+    print(f"Positional: {builder.positional}")
+    print(f"Default: {builder.default}")
+    print(f"Required: {builder.required}")
+    print(f"Flag: {builder.flag}")
+    print(f"Command: {builder.commands}")
+    print(f"Envs: {builder.envs}")
 
     print("End")
