@@ -4,6 +4,7 @@ import yaml
 from PyMake.console.builder.builder import Builder
 from PyMake.exceptions import (
     InvalidBasicVarType,
+    InvalidEnvType,
     InvalidOptionVarType,
     InvalidSequenceVarType,
     PyMakeFormatError,
@@ -263,6 +264,61 @@ def invalid_sequence_yaml1():
 
 
 # Invalid Env
+@pytest.fixture(scope="function")
+def invalid_env_yaml1():
+    return """
+    target:
+        env: 10
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_env_yaml2():
+    return """
+    target:
+        env: var1
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_env_yaml3():
+    return """
+    target:
+        env: 
+            - var1
+            - var2
+            - var3
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_env_yaml4():
+    return """
+    target:
+        env: 
+            var1: [1, 2, 3]
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_env_yaml5():
+    return """
+    target:
+        env: 
+            var1: 
+                var2: var3
+        cmd:
+            echo Hello
+    """
+
 
 # Invalid CMD
 
@@ -354,5 +410,23 @@ def test_invalid_sequence(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     invalid_input = yaml.safe_load(invalid_input)["target"]
     with pytest.raises(InvalidSequenceVarType):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "invalid_env_yaml1",
+        "invalid_env_yaml2",
+        "invalid_env_yaml3",
+        "invalid_env_yaml4",
+        "invalid_env_yaml5",
+    ],
+)
+def test_invalid_env(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(InvalidEnvType):
         model = Builder(data=invalid_input)
         model.build()
