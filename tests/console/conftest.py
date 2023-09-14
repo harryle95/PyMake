@@ -837,3 +837,35 @@ def output_yaml_target12_1():
         ],
         "envs": {"ENV1": "$(var1)", "ENV2": "$(var2)"},
     }
+
+
+# Test 13
+@pytest.fixture(scope="function")
+def valid_yaml_target13_1():
+    return """
+    target:
+        var:
+            sequence:
+                list1: 1
+                list2: [1, 2, 3]
+                list3: null
+
+        cmd:
+            - echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def output_yaml_target13_1():
+    return {
+        "vars": ["list1", "list2", "list3"],
+        "positional": [],
+        "default": {
+            "list1": "1",
+            "list2": "1 2 3",
+        },
+        "required": ["list3"],
+        "flag": {},
+        "commands": ["echo Hello"],
+        "envs": {},
+    }

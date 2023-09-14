@@ -47,6 +47,7 @@ from PyMake.console.builder.builder import Builder
         ("valid_yaml_target10_6", "output_yaml_target10_1_6"),
         ("valid_yaml_target11_1", "output_yaml_target11_1"),
         ("valid_yaml_target12_1", "output_yaml_target12_1"),
+        ("valid_yaml_target13_1", "output_yaml_target13_1"),
     ],
 )
 def test_valid_build(str_input, target, request):
