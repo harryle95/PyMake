@@ -9,6 +9,7 @@ from PyMake.exceptions import (
     InvalidOptionVarType,
     InvalidSequenceVarType,
     PyMakeFormatError,
+    RedefinedVariable,
     UnrecognisedVarKeyword,
 )
 
@@ -349,6 +350,47 @@ def invalid_cmd_yaml3():
 
 
 # Redefined var
+@pytest.fixture(scope="function")
+def redefined_var_yaml1():
+    return """
+    target:
+        var:
+            basic:
+                var1: 10
+            option:
+                var1: "-a"
+        cmd: 
+            echo Helo
+    """
+
+
+@pytest.fixture(scope="function")
+def redefined_var_yaml2():
+    return """
+    target:
+        var:
+            basic:
+                var1: 10
+            sequence:
+                var1: "-a"
+        cmd: 
+            echo Helo
+    """
+
+
+@pytest.fixture(scope="function")
+def redefined_var_yaml3():
+    return """
+    target:
+        var:
+            option:
+                var1: -b
+            sequence:
+                var1: "-a"
+        cmd: 
+            echo Helo
+    """
+
 
 # Undefined Var
 
@@ -470,5 +512,21 @@ def test_invalid_cmd(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     invalid_input = yaml.safe_load(invalid_input)["target"]
     with pytest.raises(InvalidCmdType):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "redefined_var_yaml1",
+        "redefined_var_yaml2",
+        "redefined_var_yaml3",
+    ],
+)
+def test_redefined_variable(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(RedefinedVariable):
         model = Builder(data=invalid_input)
         model.build()
