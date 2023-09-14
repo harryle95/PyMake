@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel
-
+from PyMake.console.builder.abc_builder import DictDefaultModel
 from PyMake.decorators import validate_raise_exception
 from PyMake.exceptions import (
     InvalidBasicVarType,
@@ -16,24 +15,24 @@ from PyMake.exceptions import (
 VarKeyWord = Literal["basic", "option", "sequence"]
 VarType = dict[VarKeyWord, Any] | None
 AtomType = str | int | float
-BasicType = dict[str, AtomType | None] | list[str] | None
+BasicType = str | dict[str, AtomType | None] | list[str] | None
 OptionType = dict[str, str] | None
-SequenceType = list[str] | dict[str, AtomType | list[AtomType] | None] | None
+SequenceType = str | list[str] | dict[str, AtomType | list[AtomType] | None] | None
 
 
 @validate_raise_exception(InvalidBasicVarType)
-class BasicModel(BaseModel):
-    basic: BasicType = {}
+class BasicModel(DictDefaultModel):
+    data: BasicType = {}
 
     @property
     def positional(self) -> list[str]:
-        return [key for key in self.basic]
+        return [key for key in self.data]
 
     @property
     def default(self) -> dict[str, str]:
         return {
             key: str(value).strip()
-            for key, value in self.basic.items()
+            for key, value in self.data.items()
             if (value and str(value).strip() != "")
         }
 
@@ -41,19 +40,19 @@ class BasicModel(BaseModel):
     def required(self) -> list[str]:
         return [
             key
-            for key, value in self.basic.items()
+            for key, value in self.data.items()
             if value is None or str(value).strip() == ""
         ]
 
 
 @validate_raise_exception(InvalidOptionVarType)
-class OptionModel(BaseModel):
-    option: OptionType = {}
+class OptionModel(DictDefaultModel):
+    data: OptionType = {}
 
     @property
     def default(self) -> dict[str, str]:
         _default = {}
-        for key, value in self.option.items():
+        for key, value in self.data.items():
             if value.strip() == "":
                 raise InvalidOptionVarType(
                     f"option variables must not be empty. Error detected for: {key}"
@@ -63,14 +62,16 @@ class OptionModel(BaseModel):
 
 
 @validate_raise_exception(InvalidSequenceVarType)
-class SequenceModel(BaseModel):
-    sequence: SequenceType = {}
+class SequenceModel(DictDefaultModel):
+    data: SequenceType = {}
 
     @property
-    def default(self) -> dict[str, str]:
+    def default(self) -> dict[str, str | None]:
         _default = {}
-        for key, value in self.sequence.items():
-            if isinstance(value, str):
+        for key, value in self.data.items():
+            if value is None:
+                continue
+            elif isinstance(value, str):
                 _default[key] = value
             elif hasattr(value, "__len__"):
                 _default[key] = " ".join([str(item).strip() for item in value]).strip()
@@ -82,13 +83,13 @@ class SequenceModel(BaseModel):
     def required(self) -> list[str]:
         return [
             key
-            for key, value in self.sequence.items()
+            for key, value in self.data.items()
             if value is None or str(value).strip() == ""
         ]
 
 
 @validate_raise_exception(UnrecognisedVarKeyword)
-class VarModel(BaseModel):
+class VarModel(DictDefaultModel):
     data: VarType = {}
     basic: BasicModel = BasicModel()
     option: OptionModel = OptionModel()
@@ -97,18 +98,18 @@ class VarModel(BaseModel):
     def build(self):
         if self.data is None:
             self.data = {}
-        self.basic = BasicModel(basic=self.data.get("basic", {}))
-        self.option = OptionModel(option=self.data.get("option", {}))
-        self.sequence = SequenceModel(sequence=self.data.get("sequence", {}))
+        self.basic = BasicModel(data=self.data.get("basic", {}))
+        self.option = OptionModel(data=self.data.get("option", {}))
+        self.sequence = SequenceModel(data=self.data.get("sequence", {}))
         self.validate_var()
 
     def validate_var(self):
         """
         Check if there are common variables among basic, option and sequence
         """
-        basic_keys = set(self.basic.basic.keys())
-        option_keys = set(self.option.option.keys())
-        sequence_keys = set(self.sequence.sequence.keys())
+        basic_keys = set(self.basic.data.keys())
+        option_keys = set(self.option.data.keys())
+        sequence_keys = set(self.sequence.data.keys())
         basic_option = basic_keys.intersection(option_keys)
         if basic_option:
             raise RedefinedVariable(
@@ -131,8 +132,8 @@ class VarModel(BaseModel):
     @property
     def vars(self) -> list[str]:
         return list(
-            set(self.basic.basic.keys())
-            | set(self.option.option.keys() | set(self.sequence.sequence.keys()))
+            set(self.basic.data.keys())
+            | set(self.option.data.keys() | set(self.sequence.data.keys()))
         )
 
     @property

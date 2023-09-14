@@ -1,7 +1,6 @@
 import re
 
-from pydantic import BaseModel
-
+from PyMake.console.builder.abc_builder import DictDefaultModel
 from PyMake.decorators import validate_raise_exception
 from PyMake.exceptions import InvalidEnvType
 
@@ -9,7 +8,7 @@ EnvType = dict[str, str | int | float] | None
 
 
 @validate_raise_exception(InvalidEnvType)
-class EnvModel(BaseModel):
+class EnvModel(DictDefaultModel):
     data: EnvType
     _default: dict[str, str] = {}
     _reference: dict[str, str] = {}
