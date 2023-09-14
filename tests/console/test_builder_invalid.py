@@ -10,6 +10,7 @@ from PyMake.exceptions import (
     InvalidSequenceVarType,
     PyMakeFormatError,
     RedefinedVariable,
+    UndefinedReference,
     UnrecognisedVarKeyword,
 )
 
@@ -393,6 +394,38 @@ def redefined_var_yaml3():
 
 
 # Undefined Var
+@pytest.fixture(scope="function")
+def undefined_var_yaml1():
+    return """
+    target:
+        cmd: 
+            echo Helo $(flag1)
+    """
+
+
+@pytest.fixture(scope="function")
+def undefined_var_yaml2():
+    return """
+    target:
+        env:
+            env1: $(var1)
+        cmd: 
+            echo Helo 
+    """
+
+
+@pytest.fixture(scope="function")
+def undefined_var_yaml3():
+    return """
+    target:
+        var:
+            basic: 
+                var3: 10
+        env:
+            env1: $(var1)
+        cmd: 
+            echo Helo 
+    """
 
 
 # Run test cases
@@ -528,5 +561,21 @@ def test_redefined_variable(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     invalid_input = yaml.safe_load(invalid_input)["target"]
     with pytest.raises(RedefinedVariable):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "undefined_var_yaml1",
+        "undefined_var_yaml2",
+        "undefined_var_yaml3",
+    ],
+)
+def test_undefined_variable(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(UndefinedReference):
         model = Builder(data=invalid_input)
         model.build()
