@@ -4,6 +4,7 @@ import yaml
 from PyMake.console.builder.builder import Builder
 from PyMake.exceptions import (
     InvalidBasicVarType,
+    InvalidCmdType,
     InvalidEnvType,
     InvalidOptionVarType,
     InvalidSequenceVarType,
@@ -321,6 +322,31 @@ def invalid_env_yaml5():
 
 
 # Invalid CMD
+@pytest.fixture(scope="function")
+def invalid_cmd_yaml1():
+    return """
+    target:
+        cmd:
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_cmd_yaml2():
+    return """
+    target:
+        cmd: null
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_cmd_yaml3():
+    return """
+    target:
+        cmd: 
+            cmd1: asd
+            cmd2: asd
+    """
+
 
 # Redefined var
 
@@ -428,5 +454,21 @@ def test_invalid_env(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     invalid_input = yaml.safe_load(invalid_input)["target"]
     with pytest.raises(InvalidEnvType):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "invalid_cmd_yaml1",
+        "invalid_cmd_yaml2",
+        "invalid_cmd_yaml3",
+    ],
+)
+def test_invalid_cmd(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(InvalidCmdType):
         model = Builder(data=invalid_input)
         model.build()
