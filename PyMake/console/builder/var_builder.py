@@ -140,6 +140,13 @@ class VarModel(BaseModel):
             )
 
     @property
+    def vars(self) -> list[str]:
+        return list(
+            set(self.basic.basic.keys())
+            | set(self.option.option.keys() | set(self.sequence.sequence.keys()))
+        )
+
+    @property
     def positional(self) -> list[str]:
         return self.basic.positional
 
