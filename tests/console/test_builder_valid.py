@@ -59,6 +59,7 @@ def test_valid_build(str_input, target, request):
     assert set(model.vars) == set(target["vars"])
     assert set(model.required) == set(target["required"])
     assert set(model.positional) == set(target["positional"])
+    assert set(model.commands) == set(target["commands"])
     assert model.default == target["default"]
     assert model.flag == target["flag"]
     assert model.envs == target["envs"]
