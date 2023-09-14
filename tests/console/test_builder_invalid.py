@@ -2,7 +2,13 @@ import pytest
 import yaml
 
 from PyMake.console.builder.builder import Builder
-from PyMake.exceptions import PyMakeFormatError, UnrecognisedVarKeyword
+from PyMake.exceptions import (
+    InvalidBasicVarType,
+    InvalidOptionVarType,
+    InvalidSequenceVarType,
+    PyMakeFormatError,
+    UnrecognisedVarKeyword,
+)
 
 
 # PyMake Format
@@ -118,10 +124,143 @@ def unrecognised_var_yaml5():
 
 
 # Invalid Basic Var
+@pytest.fixture(scope="function")
+def invalid_basic_yaml1():
+    return """
+    target:
+        var:
+            basic:
+                var1: [1, 2, 3]
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_basic_yaml2():
+    return """
+    target:
+        var:
+            basic:
+                var1: 
+                    age: 10
+                    name: X
+        cmd:
+            echo Hello
+    """
+
 
 # Invalid Option Var
+@pytest.fixture(scope="function")
+def invalid_option_yaml1():
+    return """
+    target:
+        var:
+            option:
+                var1: [1, 2, 3]
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml2():
+    return """
+    target:
+        var:
+            option:
+                var1: null
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml3():
+    return """
+    target:
+        var:
+            option:
+                var1: 100
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml4():
+    return """
+    target:
+        var:
+            option:
+                var1: 
+                    value: 10
+                    cost: 100
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml5():
+    return """
+    target:
+        var:
+            option: var1
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml6():
+    return """
+    target:
+        var:
+            option: 
+                - var1
+                - var2
+                - var3
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml7():
+    return """
+    target:
+        var:
+            option: 100
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml8():
+    return """
+    target:
+        var:
+            option: True
+        cmd:
+            echo Hello
+    """
+
 
 # Invalid Sequence Var
+@pytest.fixture(scope="function")
+def invalid_sequence_yaml1():
+    return """
+    target:
+        var:
+            sequence:
+                var1: 
+                    var2: 10
+        cmd:
+            echo Hello
+    """
+
 
 # Invalid Env
 
@@ -133,6 +272,24 @@ def unrecognised_var_yaml5():
 
 
 # Run test cases
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "pymake_format_yaml1",
+        "pymake_format_yaml2",
+        "pymake_format_yaml3",
+        "pymake_format_yaml4",
+        "pymake_format_yaml5",
+    ],
+)
+def test_pymake_format(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(PyMakeFormatError):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
 @pytest.mark.parametrize(
     "invalid_input",
     [
@@ -154,16 +311,48 @@ def test_unrecognised_var(invalid_input, request):
 @pytest.mark.parametrize(
     "invalid_input",
     [
-        "pymake_format_yaml1",
-        "pymake_format_yaml2",
-        "pymake_format_yaml3",
-        "pymake_format_yaml4",
-        "pymake_format_yaml5",
+        "invalid_basic_yaml1",
+        "invalid_basic_yaml2",
     ],
 )
-def test_pymake_format(invalid_input, request):
+def test_invalid_basic(invalid_input, request):
     invalid_input = request.getfixturevalue(invalid_input)
     invalid_input = yaml.safe_load(invalid_input)["target"]
-    with pytest.raises(PyMakeFormatError):
+    with pytest.raises(InvalidBasicVarType):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "invalid_option_yaml1",
+        "invalid_option_yaml2",
+        "invalid_option_yaml3",
+        "invalid_option_yaml4",
+        "invalid_option_yaml5",
+        "invalid_option_yaml6",
+        "invalid_option_yaml7",
+        "invalid_option_yaml8",
+    ],
+)
+def test_invalid_option(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(InvalidOptionVarType):
+        model = Builder(data=invalid_input)
+        model.build()
+
+
+@pytest.mark.parametrize(
+    "invalid_input",
+    [
+        "invalid_sequence_yaml1",
+    ],
+)
+def test_invalid_sequence(invalid_input, request):
+    invalid_input = request.getfixturevalue(invalid_input)
+    invalid_input = yaml.safe_load(invalid_input)["target"]
+    with pytest.raises(InvalidSequenceVarType):
         model = Builder(data=invalid_input)
         model.build()
