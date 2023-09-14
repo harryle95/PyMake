@@ -252,6 +252,30 @@ def invalid_option_yaml8():
     """
 
 
+@pytest.fixture(scope="function")
+def invalid_option_yaml9():
+    return """
+    target:
+        var:
+            option: 
+                var1: "  "
+        cmd:
+            echo Hello
+    """
+
+
+@pytest.fixture(scope="function")
+def invalid_option_yaml10():
+    return """
+    target:
+        var:
+            option: 
+                var1: "\t"
+        cmd:
+            echo Hello
+    """
+
+
 # Invalid Sequence Var
 @pytest.fixture(scope="function")
 def invalid_sequence_yaml1():
@@ -491,6 +515,8 @@ def test_invalid_basic(invalid_input, request):
         "invalid_option_yaml6",
         "invalid_option_yaml7",
         "invalid_option_yaml8",
+        "invalid_option_yaml9",
+        "invalid_option_yaml10",
     ],
 )
 def test_invalid_option(invalid_input, request):
@@ -499,6 +525,7 @@ def test_invalid_option(invalid_input, request):
     with pytest.raises(InvalidOptionVarType):
         model = Builder(data=invalid_input)
         model.build()
+        model.flag
 
 
 @pytest.mark.parametrize(
