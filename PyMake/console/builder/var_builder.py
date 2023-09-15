@@ -153,3 +153,10 @@ class VarModel(DictDefaultModel):
     @property
     def required(self) -> list[str]:
         return self.basic.required + self.sequence.required
+
+    @property
+    def type_map(self) -> dict[str, VarKeyWord]:
+        type_map = {var: "basic" for var in self.basic.data}
+        type_map.update({var: "option" for var in self.option.data})
+        type_map.update({var: "sequence" for var in self.sequence.data})
+        return type_map

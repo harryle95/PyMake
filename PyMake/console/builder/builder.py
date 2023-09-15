@@ -1,10 +1,11 @@
+from functools import cached_property
 from typing import Any, Literal
 
 from pydantic import BaseModel
 
 from PyMake.console.builder.cmd_builder import CmdModel
 from PyMake.console.builder.env_builder import EnvModel
-from PyMake.console.builder.var_builder import VarModel
+from PyMake.console.builder.var_builder import VarKeyWord, VarModel
 from PyMake.decorators import validate_raise_exception
 from PyMake.exceptions import PyMakeFormatError, UndefinedReference
 
@@ -69,3 +70,7 @@ class Builder(BaseModel):
     @property
     def commands(self) -> list[str]:
         return self.cmd.commands
+
+    @cached_property
+    def type_map(self) -> dict[str, VarKeyWord]:
+        return self.var.type_map
