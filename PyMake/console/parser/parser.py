@@ -185,6 +185,8 @@ class Parser:
             context=context,
             parser=self,
         )
+        self.interp_env = {}
+        self.interp_cmd = []
 
     def handle_value(self, value: str) -> None:
         self.state.handle_value(value)
@@ -213,6 +215,10 @@ class Parser:
         self.add_default_basic_sequence_value()
         self.check_required_provided()
 
+        # Build namespace env and cmd
+        self.interpolate_env()
+        self.interpolate_cmd()
+
     def check_required_provided(self):
         for req in self.build_context.required:
             if req not in self.namespace:
@@ -234,3 +240,26 @@ class Parser:
     @property
     def namespace(self) -> dict[str, str]:
         return self.state.context.namespace
+
+    def interpolate_env(self):
+        replacement = {
+            f"$({item})": self.namespace[item]
+            for item in self.build_context.env.reference
+        }
+        self.interp_env = {k: v for k, v in self.build_context.env.default.items()}
+        for name in self.build_context.env.interpolated:
+            raw_value = self.build_context.envs[name]
+            for k, v in replacement.items():
+                raw_value = raw_value.replace(k, v)
+            self.interp_env[name] = raw_value
+
+    def interpolate_cmd(self):
+        replacement = {
+            f"$({item})": self.namespace[item]
+            for item in self.build_context.cmd.reference
+        }
+        for cmd in self.build_context.commands:
+            processed_value = cmd
+            for k, v in replacement.items():
+                processed_value = processed_value.replace(k, v)
+            self.interp_cmd.append(processed_value)
