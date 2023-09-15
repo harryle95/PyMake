@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+import dataclasses
 import re
 from typing import TYPE_CHECKING
-
-from pydantic import BaseModel, model_validator
 
 if TYPE_CHECKING:
     from PyMake.console.builder.builder import Builder, VarKeyWord
@@ -14,17 +13,23 @@ from PyMake.exceptions import (
     MultipleDefinition,
     InvalidPositionalVariable,
     InvalidKeyword,
+    MissingRequiredVariable,
 )
 
 
-class Context(BaseModel):
+@dataclasses.dataclass
+class Context:
     build_context: Builder
     reference: str | None = None
     position: int | None = None
     use_position: bool = False
-    namespace: dict[str, str] = {}
+    namespace: dict[str, str] = dataclasses.field(default_factory=dict)
 
-    @model_validator(model="after")
+    def __post_init__(self):
+        self.validate_using_position_or_reference()
+        self.validate_using_position_must_have_valid_position()
+        self.validate_pointer_must_be_in_range()
+
     def validate_using_position_or_reference(self) -> "Context":
         if self.reference and self.use_position is True:
             raise InvalidParserState(
@@ -32,7 +37,6 @@ class Context(BaseModel):
             )
         return self
 
-    @model_validator(model="after")
     def validate_using_position_must_have_valid_position(self) -> "Context":
         if self.use_position is True and self.position is None:
             raise InvalidParserState(
@@ -40,7 +44,6 @@ class Context(BaseModel):
             )
         return self
 
-    @model_validator(model="after")
     def validate_pointer_must_be_in_range(self) -> "Context":
         if self.position:
             if self.position < 0 or self.position > len(self.build_context.positional):
@@ -55,7 +58,7 @@ class Context(BaseModel):
             return self.build_context.type_map[name]
         raise UndefinedKeyword(f"Variable - {name} was not declared in PyMake file")
 
-    def set_value(self, name: str, value: str | None) -> None:
+    def set_value(self, name: str, value: str | None = None) -> None:
         if self.get_type(name) == "basic" and value:
             if name in self.namespace:
                 raise MultipleDefinition(
@@ -119,7 +122,7 @@ class ExpectValue(State):
         raise InvalidKeyword(f"Parser expecting a value. Receive keyword: {keyword}")
 
     def handle_value(self, value: str) -> None:
-        self.context.set(self.context.reference, value)
+        self.context.set_value(self.context.reference, value)
         if self.context.get_type(self.context.reference) == "sequence":
             self.parser.transition(
                 ExpectOptionValue(
@@ -147,6 +150,10 @@ class ExpectOptionValue(ExpectOption):
 
     def handle_positional(self, value: str) -> None:
         # Set value to pointer's variable and advance pointer
+        if self.context.position >= len(self.context.build_context.positional):
+            raise InvalidPositionalVariable(
+                "Parser is not expecting a positional variable"
+            )
         variable = self.context.build_context.positional[self.context.position]
         self.context.set_value(variable, value)
         self.context.position += 1
@@ -196,3 +203,28 @@ class Parser:
                 self.handle_keyword(match[0])
             else:
                 self.handle_value(arg)
+
+        self.add_default_basic_sequence_value()
+        self.check_required_provided()
+
+    def check_required_provided(self):
+        for req in self.build_context.required:
+            if req not in self.namespace:
+                raise MissingRequiredVariable(f"Required variable: {req} not provided")
+
+    def add_default_basic_sequence_value(self):
+        for name, value in self.build_context.default.items():
+            if name not in self.namespace:
+                self.context.set_value(name, value)
+
+    @property
+    def context(self) -> Context:
+        return self.state.context
+
+    @property
+    def build_context(self) -> Builder:
+        return self.state.context.build_context
+
+    @property
+    def namespace(self) -> dict[str, str]:
+        return self.state.context.namespace
