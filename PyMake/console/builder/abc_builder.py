@@ -2,6 +2,8 @@ from typing import Any
 
 from pydantic import BaseModel, field_validator
 
+PATTERN = r"\$\((.*?)\)"
+
 
 class DictDefaultModel(BaseModel):
     data: Any

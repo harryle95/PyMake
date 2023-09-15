@@ -1,6 +1,6 @@
 import re
 
-from PyMake.console.builder.abc_builder import DictDefaultModel
+from PyMake.console.builder.abc_builder import DictDefaultModel, PATTERN
 from PyMake.decorators import validate_raise_exception
 from PyMake.exceptions import InvalidEnvType
 
@@ -10,30 +10,30 @@ EnvType = dict[str, str | int | float] | None
 @validate_raise_exception(InvalidEnvType)
 class EnvModel(DictDefaultModel):
     data: EnvType
-    _default: dict[str, str] = {}
-    _reference: dict[str, str] = {}
+    _reference: list[str] = []
     _envs: dict[str, str] = {}
+    _default: dict[str, str] = {}
+    _interpolated: list[str] = []
 
     def build(self):
-        pattern = r"\$\((.*?)\)"
         if self.data:
-            self._envs = self.data
             for key, value in self.data.items():
                 value = str(value).strip()
-                match = re.findall(pattern, value)
+                match = re.findall(PATTERN, value)
                 if match:
-                    self._reference[match[0]] = key
+                    self._reference.extend(match)
+                    self._interpolated.append(key)
                 else:
-                    self._default[value] = key
+                    self._default[key] = value
 
     @property
-    def envs(self) -> dict[str, str]:
-        return self._envs
+    def reference(self) -> list[str]:
+        return self._reference
 
     @property
     def default(self) -> dict[str, str]:
         return self._default
 
     @property
-    def reference(self) -> dict[str, str]:
-        return self._reference
+    def interpolated(self) -> list[str]:
+        return self._interpolated
