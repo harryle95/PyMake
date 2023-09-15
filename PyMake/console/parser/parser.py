@@ -243,7 +243,7 @@ class Parser:
 
     def interpolate_env(self):
         replacement = {
-            f"$({item})": self.namespace[item]
+            f"$({item})": self.namespace[item] if item in self.namespace else ""
             for item in self.build_context.env.reference
         }
         self.interp_env = {k: v for k, v in self.build_context.env.default.items()}
@@ -251,15 +251,18 @@ class Parser:
             raw_value = self.build_context.envs[name]
             for k, v in replacement.items():
                 raw_value = raw_value.replace(k, v)
+            raw_value = " ".join([item for item in raw_value.split() if item])
             self.interp_env[name] = raw_value
 
     def interpolate_cmd(self):
         replacement = {
-            f"$({item})": self.namespace[item]
+            f"$({item})": self.namespace[item] if item in self.namespace else ""
             for item in self.build_context.cmd.reference
         }
         for cmd in self.build_context.commands:
             processed_value = cmd
             for k, v in replacement.items():
                 processed_value = processed_value.replace(k, v)
+            processed_value = processed_value.split()
+            processed_value = " ".join([item for item in processed_value if item])
             self.interp_cmd.append(processed_value)

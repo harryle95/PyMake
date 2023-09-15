@@ -18,10 +18,13 @@ def parser():
                 driver: pyodbc
                 provider: mssql
                 host: 172.0.0.1
+            option:
+                all: "-a"
         env:
             engine: $(provider)+$(driver)
             url: $(usr):$(password)@$(host):$(port)/$(db)
         cmd:
+           - ls $(all)
            - python script1.py --usr $(usr) --password $(password) 
            - python script2.py --host $(host) --db $(db) --port $(port)
     """
@@ -41,6 +44,7 @@ def io_set1():
             "url": "SA:123456@localhost:1433/TestDB",
         },
         "cmd": [
+            "ls",
             "python script1.py --usr SA --password 123456",
             "python script2.py --host localhost --db TestDB --port 1433",
         ],
@@ -50,12 +54,13 @@ def io_set1():
 @pytest.fixture(scope="function")
 def io_set2():
     return {
-        "arg": "".split(),
+        "arg": "--all".split(),
         "env": {
             "engine": "mssql+pyodbc",
             "url": "db_app_dev:Password@123456@172.0.0.1:1433/TestDB",
         },
         "cmd": [
+            "ls -a",
             "python script1.py --usr db_app_dev --password Password@123456",
             "python script2.py --host 172.0.0.1 --db TestDB --port 1433",
         ],
