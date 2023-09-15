@@ -153,3 +153,43 @@ def var123_list1():
 @pytest.fixture(scope="function")
 def list23():
     return "--list2 20 30 40 --list3 100 200"
+
+
+@pytest.fixture(scope="function")
+def invalid_keyword_target12_stmt1():
+    return "--var1 --all"
+
+
+@pytest.fixture(scope="function")
+def invalid_keyword_target12_stmt2():
+    return "--var1 --var2"
+
+
+@pytest.fixture(scope="function")
+def invalid_keyword_target12_stmt3():
+    return "--var1 10 --var2 100 --var3 --all"
+
+
+@pytest.fixture(scope="function")
+def missing_positional_stmt1():
+    return "10 20 --var3 30 --list1 10 20 30 --all --list2"
+
+
+@pytest.fixture(scope="function")
+def missing_positional_stmt2():
+    return "--var1"
+
+
+@pytest.fixture(scope="function")
+def multiple_definition_1():
+    return "10 --var1 10"
+
+
+@pytest.fixture(scope="function")
+def multiple_definition_2():
+    return "--list1 10 20 30 --list1 40 50 60"
+
+
+@pytest.fixture(scope="function")
+def multiple_definition_3():
+    return "--all --all"

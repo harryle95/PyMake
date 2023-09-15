@@ -95,3 +95,11 @@ class InvalidParserState(ParseError):
     """
 
     pass
+
+
+class MissingPositionalValue(ParseError):
+    """
+    When arguments terminate when a value is expecting
+    """
+
+    pass

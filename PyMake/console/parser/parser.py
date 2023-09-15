@@ -10,10 +10,11 @@ import abc
 from PyMake.exceptions import (
     InvalidParserState,
     UndefinedKeyword,
-    MultipleDefinition,
     InvalidPositionalVariable,
     InvalidKeyword,
     MissingRequiredVariable,
+    MissingPositionalValue,
+    MultipleDefinition,
 )
 
 
@@ -60,12 +61,7 @@ class Context:
 
     def set_value(self, name: str, value: str | None = None) -> None:
         if self.get_type(name) == "basic" and value:
-            if name in self.namespace:
-                raise MultipleDefinition(
-                    f"Variable {name} is defined multiple times at parsing"
-                )
-            else:
-                self.namespace[name] = str(value)
+            self.namespace[name] = str(value)
         elif self.get_type(name) == "sequence" and value:
             if name in self.namespace:
                 self.namespace[name] += f" {value}"
@@ -94,6 +90,10 @@ class ExpectOption(State):
         self.context.reference = keyword
         self.context.use_position = False
         self.context.position = None
+        if keyword in self.context.namespace:
+            raise MultipleDefinition(
+                f"Variable {keyword} declared multiple times at parsing"
+            )
         keyword_type = self.context.get_type(keyword)
         if keyword_type in ["basic", "sequence"]:
             self.parser.transition(
@@ -203,6 +203,12 @@ class Parser:
                 self.handle_keyword(match[0])
             else:
                 self.handle_value(arg)
+
+        # Check final state being expecting option or expecting option value
+        if isinstance(self.state, ExpectValue):
+            raise MissingPositionalValue(
+                f"Value expected for variable: {self.state.context.reference}"
+            )
 
         self.add_default_basic_sequence_value()
         self.check_required_provided()
