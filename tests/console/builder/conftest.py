@@ -1,5 +1,36 @@
 import pytest
 
+from tests.console.conftest import (
+    valid_yaml_target10_1,
+    valid_yaml_target11_1,
+    valid_yaml_target12_1,
+    valid_yaml_target13_1,
+    valid_yaml_target1_1,
+    valid_yaml_target2_1,
+    valid_yaml_target3_1,
+    valid_yaml_target4_1,
+    valid_yaml_target5_1,
+    valid_yaml_target6_1,
+    valid_yaml_target7_1,
+    valid_yaml_target8_1,
+    valid_yaml_target9_1,
+)
+
+__all__ = [
+    "valid_yaml_target12_1",
+    "valid_yaml_target13_1",
+    "valid_yaml_target1_1",
+    "valid_yaml_target2_1",
+    "valid_yaml_target3_1",
+    "valid_yaml_target7_1",
+    "valid_yaml_target4_1",
+    "valid_yaml_target5_1",
+    "valid_yaml_target6_1",
+    "valid_yaml_target8_1",
+    "valid_yaml_target9_1",
+    "valid_yaml_target10_1",
+    "valid_yaml_target11_1",
+]
 ## Valid Yaml Target1 Variants
 
 
