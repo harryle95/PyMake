@@ -1,6 +1,6 @@
 import re
 
-from PyMake.console.builder.abc_builder import ListDefaultModel
+from PyMake.console.builder.abc_builder import ListDefaultModel, PATTERN
 from PyMake.decorators import validate_raise_exception
 from PyMake.exceptions import InvalidCmdType
 
@@ -25,11 +25,10 @@ class CmdModel(ListDefaultModel):
 
     def _extract_reference(self, data: list[str]) -> None:
         matches = set()
-        pattern = r"\$\((.*?)\)"
         cmds = []
         for cmd in data:
             cmds.append(cmd)
-            matches.update(re.findall(pattern, cmd))
+            matches.update(re.findall(PATTERN, cmd))
         self._commands = list(cmds)
         self._reference = list(matches)
 

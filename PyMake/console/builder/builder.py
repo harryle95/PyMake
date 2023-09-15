@@ -32,16 +32,19 @@ class Builder(BaseModel):
         # Validate reference
         self.validate_variables()
 
-    def validate_reference(self, model: EnvModel | CmdModel, name: str) -> None:
-        for reference in model.reference:
+    def validate_env_reference(self) -> None:
+        for reference in self.env.reference:
             if reference not in self.var.vars:
-                raise UndefinedReference(
-                    f"{name} has an undefined reference: {reference}"
-                )
+                raise UndefinedReference(f"env has an undefined reference: {reference}")
+
+    def validate_cmd_reference(self) -> None:
+        for reference in self.cmd.reference:
+            if reference not in self.var.vars:
+                raise UndefinedReference(f"cmd has an undefined reference: {reference}")
 
     def validate_variables(self):
-        self.validate_reference(self.env, "env")
-        self.validate_reference(self.cmd, "cmd")
+        self.validate_env_reference()
+        self.validate_cmd_reference()
 
     @property
     def positional(self) -> list[str]:
@@ -65,7 +68,7 @@ class Builder(BaseModel):
 
     @property
     def envs(self) -> dict[str, str]:
-        return self.env.envs
+        return self.env.data
 
     @property
     def commands(self) -> list[str]:

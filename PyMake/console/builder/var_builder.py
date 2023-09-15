@@ -71,8 +71,6 @@ class SequenceModel(DictDefaultModel):
         for key, value in self.data.items():
             if value is None:
                 continue
-            elif isinstance(value, str):
-                _default[key] = value
             elif hasattr(value, "__len__"):
                 _default[key] = " ".join([str(item).strip() for item in value]).strip()
             else:
@@ -96,8 +94,6 @@ class VarModel(DictDefaultModel):
     sequence: SequenceModel = SequenceModel()
 
     def build(self):
-        if self.data is None:
-            self.data = {}
         self.basic = BasicModel(data=self.data.get("basic", {}))
         self.option = OptionModel(data=self.data.get("option", {}))
         self.sequence = SequenceModel(data=self.data.get("sequence", {}))
