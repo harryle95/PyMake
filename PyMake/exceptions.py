@@ -2,6 +2,14 @@ class PyMakeError(Exception):
     pass
 
 
+class MissingTarget(PyMakeError):
+    """
+    Raised when target is not present in PyMake.yaml
+    """
+
+    pass
+
+
 class PyMakeFormatError(PyMakeError):
     pass
 

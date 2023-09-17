@@ -241,6 +241,14 @@ class Parser:
     def namespace(self) -> dict[str, str]:
         return self.state.context.namespace
 
+    @property
+    def parsed_commands(self) -> list[str]:
+        return self.interp_cmd
+
+    @property
+    def parsed_env(self) -> dict[str, str]:
+        return self.interp_env
+
     def interpolate_env(self):
         replacement = {
             f"$({item})": self.namespace[item] if item in self.namespace else ""
@@ -263,6 +271,6 @@ class Parser:
             processed_value = cmd
             for k, v in replacement.items():
                 processed_value = processed_value.replace(k, v)
-            processed_value = processed_value.split()
+            processed_value = processed_value.split(" ")
             processed_value = " ".join([item for item in processed_value if item])
             self.interp_cmd.append(processed_value)
