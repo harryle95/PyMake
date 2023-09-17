@@ -108,3 +108,23 @@ This checks which files are to be committed but does not actually commit.
 ```commandline
 pymake run commit "feat: do a dry run" --dryrun
 ```
+
+## Push upstream
+```commandline
+push_remote:
+    var:
+        basic:
+            name: feat-dev
+            main: main
+    cmd:
+        - git checkout -b $(name)
+        - git push -u origin $(name)
+        - git checkout $(main)
+        - git branch -d $(name)
+```
+
+If you set your main branch to be protected, the general workflow of going on the website, creating a new branch, checking out 
+to the branch can be a bit mundane. Additionally, you might have accidentally updated your local main, which means you now need 
+to do all the crazy stashing and popping that are too much to remember, try the procedure described here. This will checkout 
+locally to a new branch, create a remote branch with a matching name, then checkout to main and delete the new branch. Now 
+you just need to create a PR on the website and forget all the mundane git stuffs. 
