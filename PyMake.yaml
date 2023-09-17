@@ -5,9 +5,9 @@ commit:
         option:
             interactive: "-i"
             verbose: "-v"
-            all: "-A"
+            dryrun: "--dry-run"
         sequence:
             pathspec: .
     cmd:
-      - git add $(verbose) $(interactive) $(all) $(pathspec)
-      - git commit $(verbose) --message "$(message)"
+      - git add -A $(verbose) $(interactive) $(pathspec)
+      - git commit $(verbose) $(dryrun) --message "$(message)"
