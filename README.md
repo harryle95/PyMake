@@ -101,3 +101,10 @@ pymake run commit "feat: add a new target in PyMake.yaml" --pathspec PyMake.yaml
 ```commandline
 pymake run commit "feat: update current repository"
 ```
+
+### To do a dryrun 
+This checks which files are to be committed but does not actually commit. 
+
+```commandline
+pymake run commit "feat: do a dry run" --dryrun
+```
