@@ -117,7 +117,7 @@ push_remote:
             name: feat-dev
             main: main
     cmd:
-        - git checkout -b $(name)
+        - git checkout -B $(name)
         - git push -u origin $(name)
         - git checkout $(main)
         - git branch -d $(name)
