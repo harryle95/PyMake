@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PythonMake"
-version = "0.0.5"
+version = "0.0.8"
 description = "Makefile but modern"
 authors = ["hoangson <lehoangsonsg@gmail.com>"]
 readme = "README.md"
@@ -12,6 +12,7 @@ packages = [
 python = ">=3.10"
 PyYAML = "^6.0.1"
 pydantic = "^2.3.0"
+paramiko = "^3.3.1"
 
 
 [tool.poetry.group.dev.dependencies]
