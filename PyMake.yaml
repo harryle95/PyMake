@@ -16,8 +16,5 @@ server:
     env:
       ADDR: $(address)
     cmd:
-      - |
-        #!/bin/bash
-        echo "My name is $(username)"
-        echo "This house has $(rooms) room(s)"
-        ls $(all)
+      - sleep 10 && echo "Wake Up after 10s" &
+      - sleep 5 && echo "Wake Up after 5s" &
