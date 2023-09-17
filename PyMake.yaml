@@ -1,24 +1,32 @@
 commit:
-    var:
-        basic:
-            message: null
-        option:
-            interactive: "-i"
-            verbose: "-v"
-            dryrun: "--dry-run"
-        sequence:
-            pathspec: .
-    cmd:
-      - git add -A $(verbose) $(interactive) $(pathspec)
-      - git commit $(verbose) $(dryrun) --message "$(message)"
+  var:
+    basic:
+      message: null
+    option:
+      interactive: "-i"
+      verbose: "-v"
+      dryrun: "--dry-run"
+    sequence:
+      pathspec: .
+  cmd:
+    - git add -A $(verbose) $(interactive) $(pathspec)
+    - git commit $(verbose) $(dryrun) --message "$(message)"
 
 push_remote:
-    var:
-        basic:
-            name: feat-dev
-            main: main
-    cmd:
-        - git checkout -B $(name)
-        - git push -u origin $(name)
-        - git checkout $(main)
-        - git branch -d $(name)
+  var:
+    basic:
+      name: feat-dev
+      main: main
+  cmd:
+    - git checkout -B $(name)
+    - git push -u origin $(name)
+    - git checkout $(main)
+    - git branch -d $(name)
+
+publish:
+  var:
+    basic: [ usr, pwd ]
+  cmd:
+    - poetry version patch
+    - poetry build
+    - poetry publish -u $(usr) -p $(pwd)
