@@ -1,0 +1,23 @@
+database:
+    cmd:
+      docker compose up mssql_server
+
+server:
+    var:
+      basic:
+        username: harry
+        address: Adelaide
+        num_floors: 2
+        house_type: Townhouse
+      option:
+        all: "-a"
+      sequence:
+        rooms
+    env:
+      ADDR: $(address)
+    cmd:
+      - |
+        #!/bin/bash
+        echo "My name is $(username)"
+        echo "This house has $(rooms) room(s)"
+        ls $(all)
