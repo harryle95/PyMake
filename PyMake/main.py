@@ -117,7 +117,7 @@ def main():
     yaml_dict = read_pymake_file()
     # Parse commands:
     if args.command == "list":
-        return list_target(yaml_dict)
+        return list_target(yaml_dict, args)
     if args.command == "inspect":
         return inspect_target(yaml_dict, args)
     if args.command == "run":
