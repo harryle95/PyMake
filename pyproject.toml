@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PythonMake"
-version = "0.0.4"
+version = "0.0.5"
 description = "Makefile but modern"
 authors = ["hoangson <lehoangsonsg@gmail.com>"]
 readme = "README.md"

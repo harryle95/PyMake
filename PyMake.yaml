@@ -1,20 +1,13 @@
-database:
-    cmd:
-      docker compose up mssql_server
-
-server:
+commit:
     var:
-      basic:
-        username: harry
-        address: Adelaide
-        num_floors: 2
-        house_type: Townhouse
-      option:
-        all: "-a"
-      sequence:
-        rooms
-    env:
-      ADDR: $(address)
+        basic:
+            message: null
+        option:
+            interactive: "-i"
+            verbose: "-v"
+            dryrun: "--dry-run"
+        sequence:
+            pathspec: .
     cmd:
-      - sleep 10 && echo "Wake Up after 10s" &
-      - sleep 5 && echo "Wake Up after 5s" &
+      - git add -A $(verbose) $(interactive) $(pathspec)
+      - git commit $(verbose) $(dryrun) --message "$(message)"
