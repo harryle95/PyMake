@@ -90,7 +90,7 @@ commit:
       - git commit $(verbose) $(dryrun) --message "$(message)"
 ```
 Acknowledging that you can do pretty much the same thing with every IDE, I just want to show how PyMake can simplify
-this add to commit git workflow. 
+this add to commit git workflow. Note that here you have to add in the quotation marks yourself. 
 
 ### To add a specific file: 
 ```commandline
