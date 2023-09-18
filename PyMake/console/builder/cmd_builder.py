@@ -33,9 +33,9 @@ def parse_string(entry: str, exe: str | None = None) -> Command:
     if executable:
         return Command(entry, executable)
     if exe == "python":
-        return Command(entry, "python")
+        return Command(entry, "/usr/bin/python3")
     if exe == "bash":
-        return Command(entry, "bash")
+        return Command(entry, "/usr/bin/bash")
     raise ValueError(f"Unsupported executable: {exe}")
 
 
