@@ -2,8 +2,9 @@ import os
 import subprocess
 from typing import Any
 
+from PyMake.console.builder.cmd_builder import Command
 from PyMake.console.helpers import build_target, parse_arg
-from PyMake.exceptions import MissingTarget
+from PyMake.exceptions import InvalidExecutable, MissingTarget
 
 
 def set_env(env_dict: dict[str, str]):
@@ -16,14 +17,21 @@ def set_env(env_dict: dict[str, str]):
         os.environ[name] = value
 
 
-def run_cmd(cmd_list: list[str]):
+def run_cmd(cmd_list: list[Command]):
     """
-    Execute commands in command list
+    Execute commands
     :param cmd_list: list of commands
     :return:
     """
+
     for cmd in cmd_list:
-        subprocess.run(cmd, shell=True, check=True)
+        if cmd.executable is None:
+            subprocess.run(cmd.command, shell=True, check=True)
+        else:
+            if os.path.exists(cmd.executable):
+                subprocess.run([cmd.executable, "-c", cmd.command], check=True)
+            else:
+                raise InvalidExecutable(f"#!{cmd.executable} not found")
 
 
 def run_target(yaml_dict: dict[str, Any], args):
@@ -33,9 +41,7 @@ def run_target(yaml_dict: dict[str, Any], args):
     # Build target and parse arguments
     builder = build_target(yaml_dict, args.target)
     parser = parse_arg(builder, args.args)
-
     # Set env
     set_env(parser.parsed_env)
-
     # Run commands:
     run_cmd(parser.parsed_commands)

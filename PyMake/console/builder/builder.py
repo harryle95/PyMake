@@ -3,7 +3,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel
 
-from PyMake.console.builder.cmd_builder import CmdModel
+from PyMake.console.builder.cmd_builder import CmdModel, Command
 from PyMake.console.builder.env_builder import EnvModel
 from PyMake.console.builder.var_builder import VarKeyWord, VarModel
 from PyMake.decorators import validate_raise_exception
@@ -73,6 +73,10 @@ class Builder(BaseModel):
     @property
     def commands(self) -> list[str]:
         return self.cmd.commands
+
+    @property
+    def executing_commands(self) -> list[Command]:
+        return self.cmd.executing_commands
 
     @cached_property
     def type_map(self) -> dict[str, VarKeyWord]:

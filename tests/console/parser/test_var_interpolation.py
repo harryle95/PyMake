@@ -72,4 +72,4 @@ def test_interpolate(parser, target, request):
     target = request.getfixturevalue(target)
     parser.parse(target["arg"])
     assert parser.interp_env == target["env"]
-    assert parser.interp_cmd == target["cmd"]
+    assert [item.command for item in parser.interp_cmd] == target["cmd"]
