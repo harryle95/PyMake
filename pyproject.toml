@@ -1,12 +1,28 @@
 [tool.poetry]
 name = "PythonMake"
-version = "0.0.8"
-description = "Makefile but modern"
+version = "0.0.11"
+description = "A simple CLI wrapper"
 authors = ["hoangson <lehoangsonsg@gmail.com>"]
 readme = "README.md"
 packages = [
     {include="PyMake"}
 ]
+license = "MIT"
+repository="https://github.com/haryle/PyMake"
+keywords= ["cli", "commands"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: Unix",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+]
+
 
 [tool.poetry.dependencies]
 python = ">=3.10"
