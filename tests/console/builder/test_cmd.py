@@ -59,7 +59,7 @@ def dict_cmd_python():
     """
     return {
         "cmd": make_cmd(definition),
-        "exec": ["python", "python"],
+        "exec": ["/usr/bin/python3", "/usr/bin/python3"],
         "script": ['print("Hello")', 'print("World")'],
     }
 
@@ -73,7 +73,7 @@ def dict_cmd_python_string():
     """
     return {
         "cmd": make_cmd(definition),
-        "exec": "python",
+        "exec": "/usr/bin/python3",
         "script": 'print("Hello")',
     }
 
@@ -105,7 +105,7 @@ def dict_cmd_python_shebang():
     """
     return {
         "cmd": make_cmd(definition),
-        "exec": ["/usr/bin/python3", "python"],
+        "exec": ["/usr/bin/python3", "/usr/bin/python3"],
         "script": ['#!/usr/bin/python3\nprint("Hello")', 'print("World")'],
     }
 
@@ -120,7 +120,7 @@ def dict_cmd_bash():
     """
     return {
         "cmd": make_cmd(definition),
-        "exec": ["bash", "bash"],
+        "exec": ["/usr/bin/bash", "/usr/bin/bash"],
         "script": ['echo "Hello"', 'echo "World"'],
     }
 
@@ -138,7 +138,12 @@ def dict_cmd_python_bash():
     """
     return {
         "cmd": make_cmd(definition),
-        "exec": ["python", "python", "bash", "bash"],
+        "exec": [
+            "/usr/bin/python3",
+            "/usr/bin/python3",
+            "/usr/bin/bash",
+            "/usr/bin/bash",
+        ],
         "script": ['print("Hello")', 'print("World")', 'echo "Hello"', 'echo "World"'],
     }
 
@@ -156,7 +161,12 @@ def list_cmd_python_bash():
     """
     return {
         "cmd": make_cmd(definition),
-        "exec": ["python", "python", "bash", "bash"],
+        "exec": [
+            "/usr/bin/python3",
+            "/usr/bin/python3",
+            "/usr/bin/bash",
+            "/usr/bin/bash",
+        ],
         "script": ['print("Hello")', 'print("World")', 'echo "Hello"', 'echo "World"'],
     }
 
@@ -189,10 +199,10 @@ def list_cmd_str_python_bash():
             "/usr/bin/bash",
             None,
             "/usr/bin/python3",
-            "python",
-            "python",
-            "bash",
-            "bash",
+            "/usr/bin/python3",
+            "/usr/bin/python3",
+            "/usr/bin/bash",
+            "/usr/bin/bash",
         ],
         "script": [
             make_cmd(
