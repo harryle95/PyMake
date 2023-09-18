@@ -4,6 +4,8 @@ import dataclasses
 import re
 from typing import TYPE_CHECKING
 
+from PyMake.console.builder.cmd_builder import Command
+
 if TYPE_CHECKING:
     from PyMake.console.builder.builder import Builder, VarKeyWord
 import abc
@@ -242,7 +244,7 @@ class Parser:
         return self.state.context.namespace
 
     @property
-    def parsed_commands(self) -> list[str]:
+    def parsed_commands(self) -> list[Command]:
         return self.interp_cmd
 
     @property
@@ -267,10 +269,10 @@ class Parser:
             f"$({item})": self.namespace[item] if item in self.namespace else ""
             for item in self.build_context.cmd.reference
         }
-        for cmd in self.build_context.commands:
-            processed_value = cmd
+        for cmd in self.build_context.executing_commands:
+            processed_value = cmd.command
             for k, v in replacement.items():
                 processed_value = processed_value.replace(k, v)
             processed_value = processed_value.split(" ")
             processed_value = " ".join([item for item in processed_value if item])
-            self.interp_cmd.append(processed_value)
+            self.interp_cmd.append(Command(processed_value, cmd.executable))
