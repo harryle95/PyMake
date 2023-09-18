@@ -111,3 +111,11 @@ class MissingPositionalValue(ParseError):
     """
 
     pass
+
+
+class InvalidExecutable(PyMakeError):
+    """
+    When shebang executable is not found
+    """
+
+    pass
