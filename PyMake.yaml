@@ -1,3 +1,7 @@
+test:
+  cmd:
+    poetry run pytest --cov-report term-missing --cov=PyMake -x
+
 commit:
   var:
     basic:
@@ -11,6 +15,7 @@ commit:
   cmd:
     - git add -A $(verbose) $(interactive) $(pathspec)
     - git commit $(verbose) $(dryrun) --message "$(message)"
+
 
 push_remote:
   var:
