@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PythonMake"
-version = "0.0.11"
+version = "0.0.12"
 description = "A simple CLI wrapper"
 authors = ["hoangson <lehoangsonsg@gmail.com>"]
 readme = "README.md"
