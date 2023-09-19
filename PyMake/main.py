@@ -30,15 +30,20 @@ def register_command(
     return parser
 
 
-def read_pymake_file() -> dict[str, Any]:
-    pymake_file = Path(os.getcwd()) / "PyMake.yaml"
+def read_pymake_file(path) -> dict[str, Any]:
+    pymake_file = Path(path) / "PyMake.yaml"
     if not pymake_file.exists():
         raise FileNotFoundError("cannot find PyMake.yaml file in the current directory")
     with open(pymake_file, "r") as file:
         return yaml.safe_load(file)
 
 
-def main():
+def main(argv=None, path=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    if path is None:
+        path = os.getcwd()
+
     main_parser = argparse.ArgumentParser(prog="pymake")
     main_parser.add_argument("--version", help="PyMake argument", action="store_true")
     subparser = main_parser.add_subparsers(dest="command")
@@ -114,13 +119,13 @@ def main():
         nargs=argparse.REMAINDER,
         help="values of variables declared in the var element under target",
     )
-    args = main_parser.parse_args()
+    args = main_parser.parse_args(argv)
     # print(args)
 
     if args.version:
         print(__version__)
         return
-    yaml_dict = read_pymake_file()
+    yaml_dict = read_pymake_file(path)
     # Parse commands:
     if args.command == "list":
         return list_target(yaml_dict, args)
