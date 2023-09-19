@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import pytest
 
@@ -7,7 +7,7 @@ from PyMake.main import main
 
 @pytest.fixture(scope="function")
 def pymake_path():
-    return os.getcwd()
+    return Path(__file__).parent
 
 
 @pytest.mark.parametrize(
