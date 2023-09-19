@@ -1,0 +1,8 @@
+missing_default_basic_0:
+  var:
+    basic:
+      bhp_class: 0
+    option:
+      interactive: "-i"
+  cmd:
+    - echo "$(interactive) $(bhp_class)"
