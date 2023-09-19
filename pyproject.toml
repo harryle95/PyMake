@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PythonMake"
-version = "0.0.13"
+version = "0.0.15"
 description = "A simple CLI wrapper"
 authors = ["hoangson <lehoangsonsg@gmail.com>"]
 readme = "README.md"
@@ -31,12 +31,14 @@ pydantic = "^2.3.0"
 paramiko = "^3.3.1"
 
 
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.1"
 pytest-cov = "^4.1.0"
 ruff = "^0.0.287"
 black = "^23.9.0"
 pre-commit = "^3.4.0"
+toml = "^0.10.2"
 
 [tool.poetry.scripts]
 pymake = "PyMake.main:main"
