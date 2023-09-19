@@ -17,6 +17,7 @@ commit:
     - git commit $(verbose) $(dryrun) --message "$(message)"
 
 
+
 push_remote:
   var:
     basic:
@@ -33,6 +34,7 @@ publish:
     basic: [ usr, pwd ]
   cmd:
     - poetry version patch
+    - python scripts/bump_version.py --pyproject_path . --package_path PyMake
     - poetry build
     - poetry publish -u $(usr) -p $(pwd)
 

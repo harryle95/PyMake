@@ -46,7 +46,7 @@ def print_cmd(builder: Builder, parser: Parser | None):
     if parser:
         print("bound command(s): ")
         for cmd in parser.parsed_commands:
-            print(indent(cmd, "  "))
+            print(indent(cmd.command, "  "))
     else:
         print("command(s): ")
         for cmd in builder.commands:
