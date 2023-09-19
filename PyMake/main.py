@@ -9,6 +9,7 @@ import yaml
 from PyMake.console import list_target
 from PyMake.console.inspect import inspect_target
 from PyMake.console.run import run_target
+from . import __version__
 
 sys.tracebacklimit = 0
 
@@ -39,6 +40,7 @@ def read_pymake_file() -> dict[str, Any]:
 
 def main():
     main_parser = argparse.ArgumentParser(prog="pymake")
+    main_parser.add_argument("--version", help="PyMake argument", action="store_true")
     subparser = main_parser.add_subparsers(dest="command")
 
     # Register all commands
@@ -113,7 +115,11 @@ def main():
         help="values of variables declared in the var element under target",
     )
     args = main_parser.parse_args()
+    # print(args)
 
+    if args.version:
+        print(__version__)
+        return
     yaml_dict = read_pymake_file()
     # Parse commands:
     if args.command == "list":
