@@ -38,13 +38,4 @@ publish:
     - poetry build
     - poetry publish -u $(usr) -p $(pwd)
 
-test_python:
-  cmd:
-    - bash:
-        - echo Hello World
-        - ls
-        - cd ..
-        - ls
-        - cd -
-        - ls
 
