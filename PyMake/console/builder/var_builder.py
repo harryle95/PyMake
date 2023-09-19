@@ -33,7 +33,7 @@ class BasicModel(DictDefaultModel):
         return {
             key: str(value).strip()
             for key, value in self.data.items()
-            if (value and str(value).strip() != "")
+            if (value is not None and str(value).strip() != "")
         }
 
     @property
